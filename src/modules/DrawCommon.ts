@@ -3,63 +3,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import Canvas from "./MetaCanvas"
-
-// 图形参数类型描述
-// 注意属性 lineCap、lineJoin类型
-// 分别是：CanvasLineCap、CanvasLineJoin
-// 而不是 string 类型
-type DrawParam = {
-	left: number,
-	top: number,
-	dotArray: Array<[number, number]>,
-	width: number,
-	height: number,
-	radius: number,
-	rX: number,
-	rY: number,
-	sAngle: number,
-	eAngle: number,
-	counterclockwise: boolean,
-	fill: string,
-	stroke: string,
-	shadowColor: string,
-	shadowBlur: number,
-	shadowOffsetX: number,
-	shadowOffsetY: number,
-	lineCap: CanvasLineCap,
-	lineJoin: CanvasLineJoin,
-	lineWidth: number,
-	miterLimit: number,
-	angle: number,
-	scaleWidth: number,
-	scaleHeight: number,
-	globalAlpha: number,
-	// globalCompositeOperation: GlobalCompositeOperation,
-	selectable: boolean,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [attr: string]: any
-}
-
-// Partial 变为可选参数
-type PartialDrawParam = Partial<DrawParam>
-
-enum Direction {
-	Left = 'left',
-	Right ='right',
-	Top = 'top',
-	Down = 'down'
-}
-
-type AnimateOption = {
-	vX: number,
-	vY: number,
-	sX: number,
-	sY: number,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [attr: string]: any
-}
-
-type PartialAnimateOption = Partial<AnimateOption>
+import { GlobalCompositeOperation, Direction } from "./Enum"
+import { PartialDrawParam, PartialAnimateOption } from "./Type"
 
 class DrawCommon {
     drawParam: PartialDrawParam = {
@@ -88,7 +33,7 @@ class DrawCommon {
         scaleWidth: 1,
         scaleHeight: 1,
         globalAlpha: 1,
-        // globalCompositeOperation: 'source-over',
+        globalCompositeOperation: GlobalCompositeOperation.SOURCEOVER,
         selectable: false
     }
     canvas!: Canvas
@@ -104,7 +49,9 @@ class DrawCommon {
         if (drawParam) {
             let key: (keyof PartialDrawParam)
             for (key in drawParam) {
-                this.drawParam[key] = drawParam[key]
+				if (key in this.drawParam) {
+					this.drawParam[key] = drawParam[key]
+				}
             }
         }
     }
@@ -116,7 +63,9 @@ class DrawCommon {
 	set(attr: PartialDrawParam) {
         let key: (keyof PartialDrawParam)
 		for (key in attr) {
-			this.drawParam[key] = attr[key]
+			if (key in this.drawParam) {
+				this.drawParam[key] = attr[key]
+			}
 		}
 
 		return this
@@ -136,7 +85,7 @@ class DrawCommon {
 		ctx.lineWidth = this.drawParam.lineWidth as number
 		ctx.miterLimit = this.drawParam.miterLimit as number
 		ctx.globalAlpha = this.drawParam.globalAlpha as number
-		// ctx.globalCompositeOperation = this.drawParam.globalCompositeOperation as GlobalCompositeOperation
+		ctx.globalCompositeOperation = this.drawParam.globalCompositeOperation as GlobalCompositeOperation
 		ctx.translate(this.drawParam.left as number, this.drawParam.top as number)
 		ctx.rotate(this.drawParam.angle as number * Math.PI / 180)
 		ctx.scale(this.drawParam.scaleWidth as number, this.drawParam.scaleHeight as number)
@@ -214,16 +163,16 @@ class DrawCommon {
 		}
 
 		if (typeof distance == 'number') {
-			if (direction == Direction.Left && this.drawParam.left! >= distance) {
+			if (direction == Direction.LEFT && this.drawParam.left! >= distance) {
 				this.drawParam.left! -= this.animateOption.vX!
 				this.drawParam.top! += this.animateOption.vY!
-			} else if (direction == Direction.Right && this.drawParam.left! <= distance) {
+			} else if (direction == Direction.RIGHT && this.drawParam.left! <= distance) {
 				this.drawParam.left! += this.animateOption.vX!
 				this.drawParam.top! += this.animateOption.vY!
-			} else if (direction == Direction.Top && this.drawParam.top! >= distance) {
+			} else if (direction == Direction.TOP && this.drawParam.top! >= distance) {
 				this.drawParam.left! += this.animateOption.vX!
 				this.drawParam.top! -= this.animateOption.vY!
-			} else if (direction == Direction.Down && this.drawParam.top! <= distance) {
+			} else if (direction == Direction.DOWN && this.drawParam.top! <= distance) {
 				this.drawParam.left! += this.animateOption.vX!
 				this.drawParam.top! += this.animateOption.vY!
 			} else {

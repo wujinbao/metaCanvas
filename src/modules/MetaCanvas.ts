@@ -3,27 +3,18 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 /* eslint-disable prettier/prettier */
 import DrawCommon from "./DrawCommon"
-
-// 画布配置选项类型描述
-type CanvasParam = {
-    width: number,
-    height: number,
-    id: string,
-    [attr: string]: any
-}
-
-// Partial 变为可选参数
-type PartialCanvasParam = Partial<CanvasParam>
+import { PartialCanvasParam } from "./Type"
 
 // 画布类
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Canvas {
     canvas: HTMLCanvasElement
-    ctx!: CanvasRenderingContext2D
+    ctx: CanvasRenderingContext2D
     canvasParam: PartialCanvasParam = {
         width: 1000,
         height: 600,
-        id: ""
+		id: "",
+		dom: "",
     }
     drawTargetArray: Array<DrawCommon> = []
     lastX: number = 0
@@ -49,24 +40,19 @@ class Canvas {
                 } else if (key == "height") {
                     canvas[key] = canvasParam[key] as number
                 } else {
-                    this.canvasParam[key] = canvasParam[key]
+					if (key in this.canvasParam) {
+                    	this.canvasParam[key] = canvasParam[key]
+					}
                 }
             }
         } else {
             canvas.width = this.canvasParam.width as number
             canvas.height = this.canvasParam.height as number
         }
-        // todo id 获取元素问题待解决
-        // if (this.canvasParam.id) {
-        //     const dom = document.getElementById(this.canvasParam.id) as HTMLCanvasElement
-        //     dom.appendChild(canvas)
-        // } else {
-        //     const body = document.body as HTMLCanvasElement
-        //     body.appendChild(canvas)
-        // }
-        const body = document.body as HTMLCanvasElement
-        body.appendChild(canvas)
-        
+
+		const domNew = this.canvasParam.id ? document.getElementById(this.canvasParam.id) as HTMLElement : this.canvasParam.dom ? this.canvasParam.dom as HTMLElement : document.body as HTMLBodyElement
+        domNew.appendChild(canvas)
+
         if (ctx) {
             this.ctx = ctx
         }
@@ -134,14 +120,16 @@ class Canvas {
 				// 需注意一下，map 遍历数组无法通过 return 退出循环
 				for (let i = 0; i < vertexArray.length; i++) {
 					if (resultX >= vertexArray[i][0] - vertexWidth && resultX <= vertexArray[i][0] + vertexWidth && resultY >= vertexArray[i][1] - vertexHeight && resultY <= vertexArray[i][1] + vertexHeight) {
-						this.canvas.onmousemove = this.throttle(this.onmousemove.bind(this, drawTargetItem, i), this.delay)
+						// this.canvas.onmousemove = this.throttle(this.onmousemove.bind(this, drawTargetItem, i), this.delay)
+						this.canvas.onmousemove = this.onmousemove.bind(this, drawTargetItem, i)
 
 						return drawTargetItem
 					}
 				}
 
 				if (resultX >= vertexArray[0][0] && resultX <= vertexArray[4][0] && resultY >= vertexArray[0][1] && resultY <= vertexArray[4][1]) {
-					this.canvas.onmousemove = this.throttle(this.onmousemove.bind(this, drawTargetItem, 9), this.delay)
+					// this.canvas.onmousemove = this.throttle(this.onmousemove.bind(this, drawTargetItem, 9), this.delay)
+					this.canvas.onmousemove = this.onmousemove.bind(this, drawTargetItem, 9)
 				}
 			}
 		})
@@ -151,6 +139,7 @@ class Canvas {
 		this.canvas.onmousemove = null
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	onmousemove(drawTargetItem: DrawCommon, vertexIndex: number, e: any) {
 		const currentX: number = e.offsetX
 		const currentY: number = e.offsetY
@@ -177,10 +166,10 @@ class Canvas {
     	return function () {
         	if (!flag) return
         	flag = false
-        	setTimeout(() => {
-            	fn()
+        	setTimeout(function () {
+				fn()
             	flag = true
-        	}, delay)
+			}, delay)
     	}
 	}
 

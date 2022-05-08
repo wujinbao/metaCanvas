@@ -1,43 +1,45 @@
 <template>
-  <h1 class="hello">
-    {{ Title }}
-  </h1>
-  <div class="content-container">
-    <h3>{{ contentTitle }}</h3>
-    <p v-for="(content, index) of contentArray" :key="index">
-      {{ content }}
-    </p>
-    <h3>{{ describeTitle }}</h3>
-    <p v-for="(describe, index) of describeArray" :key="index">
-      {{ describe }}
-    </p>
-    <h3>每个图形属性值的获取与设置通过 get 和 set 方法实现</h3>
-    <p>get 方法: 参数是一个 string 类型</p>
-    <p>set 方法: 参数是一个 PartialDrawParam 对象类型</p>
-    <div class="form-container">
-      <div>
-        <h3>{{ rectAttrTitle }}</h3>
-        <form @submit.prevent="circleSubmit">
-          <div v-for="(data, index) of rectFormData" :key="index">
-            <div class="form-content-container">
-              <span>{{ data.title }}: </span>
-              <input type="number" v-model="data.value" placeholder="0" />
+  <div ref="basicShape">
+    <h1 class="title">
+      {{ Title }}
+    </h1>
+    <div class="content-container">
+      <h3>{{ contentTitle }}</h3>
+      <p v-for="(content, index) of contentArray" :key="index">
+        {{ content }}
+      </p>
+      <h3>{{ describeTitle }}</h3>
+      <p v-for="(describe, index) of describeArray" :key="index">
+        {{ describe }}
+      </p>
+      <h3>每个图形属性值的获取与设置通过 get 和 set 方法实现</h3>
+      <p>get 方法: 参数是一个 string 类型</p>
+      <p>set 方法: 参数是一个 PartialDrawParam 对象类型</p>
+      <div class="form-container">
+        <div>
+          <h3>{{ rectAttrTitle }}</h3>
+          <form @submit.prevent="rectSubmit">
+            <div v-for="(data, index) of rectFormData" :key="index">
+              <div class="form-content-container">
+                <span>{{ data.title }}: </span>
+                <input type="number" v-model="data.value" />
+              </div>
             </div>
-          </div>
-          <input type="submit" value="设置完成" class="submit" />
-        </form>
-      </div>
-      <div>
-        <h3>{{ circleAttrTitle }}</h3>
-        <form @submit.prevent="circleSubmit">
-          <div v-for="(data, index) of circleFormData" :key="index">
-            <div class="form-content-container">
-              <span>{{ data.title }}: </span>
-              <input type="number" v-model="data.value" placeholder="0" />
+            <input type="submit" value="设置完成" class="submit" />
+          </form>
+        </div>
+        <div>
+          <h3>{{ circleAttrTitle }}</h3>
+          <form @submit.prevent="circleSubmit">
+            <div v-for="(data, index) of circleFormData" :key="index">
+              <div class="form-content-container">
+                <span>{{ data.title }}: </span>
+                <input type="number" v-model="data.value" />
+              </div>
             </div>
-          </div>
-          <input type="submit" value="设置完成" class="submit" />
-        </form>
+            <input type="submit" value="设置完成" class="submit" />
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -45,10 +47,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Canvas, Rect, Circle } from "@/modules/MetaIndex";
+import { Canvas, Rect, Circle } from "@/modules/index";
 
 export default defineComponent({
-  name: "basicShapeView",
+  name: "basicShape",
   data() {
     return {
       rect: new Rect(),
@@ -57,7 +59,7 @@ export default defineComponent({
       contentTitle: "绘制图形步骤：",
       contentArray: [
         "第一步：创建画布 Canvas 实例 - let canvas = new Canvas()。",
-        "第二步：创建矩形 Rect 实例和圆形 Circle 实例 - let rect = new Rect(); let rect = new Rect()。",
+        "第二步：创建矩形 Rect 实例和圆形 Circle 实例 - let rect = new Rect(); let rect = new Circle()。",
         "第三步：通过画布上的 add 方法把图形 rect 和 circle 添加到画布 Canvas 上 - canvas.add([rect, circle])。",
       ],
       describeTitle: "属性描述说明：",
@@ -132,12 +134,16 @@ export default defineComponent({
           value: 1,
         },
       ],
+      init: true,
     };
   },
   // eslint-disable-next-line prettier/prettier
   methods: {
     drawShape: function () {
-      let canvas = new Canvas();
+      let basicShapeDOM = this.$refs.basicShape;
+      let canvas = new Canvas({
+        dom: basicShapeDOM,
+      });
       let rect = new Rect({
         left: 50,
         top: 50,
@@ -147,7 +153,7 @@ export default defineComponent({
       });
       let circle = new Circle({
         left: 800,
-        top: 80,
+        top: 50,
         radius: 30,
         fill: "green",
       });
@@ -157,6 +163,10 @@ export default defineComponent({
     },
     rectSubmit() {
       this.rectFormData.map((item) => {
+        if (this.init) {
+          item.value = this.rect.get(item.title);
+          return;
+        }
         if (item.value) {
           {
             this.rect.set({
@@ -165,24 +175,27 @@ export default defineComponent({
           }
         } else {
           if (
-            item.title == "lineWidth" ||
-            item.title == "scaleWidth" ||
-            item.title == "scaleHeight"
+            item.title == "left" ||
+            item.title == "top" ||
+            item.title == "angle"
           ) {
-            item.value = this.rect.get(item.title);
-          } else {
             this.rect.set({
               [item.title]: item.value,
             });
+          } else {
+            item.value = this.rect.get(item.title);
           }
         }
-        console.log(this.rect.get(item.title));
       });
 
       this.rect.canvas.renderAll();
     },
     circleSubmit() {
       this.circleFormData.map((item) => {
+        if (this.init) {
+          item.value = this.circle.get(item.title);
+          return;
+        }
         if (item.value) {
           {
             this.circle.set({
@@ -191,25 +204,27 @@ export default defineComponent({
           }
         } else {
           if (
-            item.title == "lineWidth" ||
-            item.title == "scaleWidth" ||
-            item.title == "scaleHeight"
+            item.title == "left" ||
+            item.title == "top" ||
+            item.title == "angle"
           ) {
-            item.value = this.circle.get(item.title);
-          } else {
             this.circle.set({
               [item.title]: item.value,
             });
+          } else {
+            item.value = this.circle.get(item.title);
           }
         }
-        console.log(this.circle.get(item.title));
       });
 
       this.circle.canvas.renderAll();
     },
   },
-  created() {
+  mounted() {
     this.drawShape();
+    this.rectSubmit();
+    this.circleSubmit();
+    this.init = false;
   },
 });
 </script>
