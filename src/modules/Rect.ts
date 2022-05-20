@@ -19,6 +19,7 @@ class Rect extends DrawCommon {
 		)
 
 		this.vertex()
+		this.marginVertex()
 	}
 
 	vertex() {
@@ -52,6 +53,8 @@ class Rect extends DrawCommon {
 			[left + width, top + height],
 			[left, top + height]
 		]
+
+		this.marginParam()
 	}
 
 	scale(selectorMode: string, moveX: number, moveY: number) {

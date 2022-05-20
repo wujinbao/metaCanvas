@@ -150,17 +150,12 @@ export default defineComponent({
         width: 100,
         height: 100,
         stroke: "red",
-        selectable: true,
-        angle: 30,
       });
       let circle = new Circle({
         left: 800,
         top: 100,
         radius: 30,
         fill: "green",
-        angle: 30,
-        eAngle: 1.5,
-        selectable: true,
       });
       canvas.add([rect, circle]);
       this.rect = rect;

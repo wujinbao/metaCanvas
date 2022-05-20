@@ -21,6 +21,7 @@ class Circle extends DrawCommon {
 		)
 
 		this.vertex()
+		this.marginVertex()
 	}
 
 	vertex() {
@@ -52,6 +53,8 @@ class Circle extends DrawCommon {
 			[left + radius, top + radius],
 			[left - radius, top + radius],
 		]
+
+		this.marginParam()
 	}
 
 	scale(selectorMode: string, moveX: number, moveY: number) {

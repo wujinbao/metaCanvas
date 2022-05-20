@@ -121,7 +121,9 @@ class DrawCommon {
 
 		ctx.restore()
 
-		this.marginDraw(ctx)
+		if (this.drawParam.selectable) {
+			this.marginDraw(ctx)
+		}
 	}
 
     // 图形选择器 - 根据顶点绘制
@@ -161,7 +163,7 @@ class DrawCommon {
 		let maxX: number = 0
 		let maxY: number = 0
 		this.marginVertexArray.map((item, index) => {
-			const point: Array<number> = computeMethod.rotationPoint(this.drawParam.rotateX, this.drawParam.rotateX, item[0], item[1], this.drawParam.angle)
+			const point: Array<number> = computeMethod.rotationPoint(this.drawParam.rotateX, this.drawParam.rotateY, item[0], item[1], this.drawParam.angle)
 			if (index == 0) {
 				minX = point[0]
 				minY = point[1]
