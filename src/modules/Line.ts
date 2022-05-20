@@ -11,8 +11,8 @@ class Line extends DrawCommon {
 	}
 
 	privateDraw(ctx: CanvasRenderingContext2D) {
-		ctx.moveTo(0, 0)
-		this.drawParam.dotArray!.map((item) => {
+		ctx.moveTo(this.drawParam.left - this.drawParam.rotateX, this.drawParam.top - this.drawParam.rotateY)
+		this.drawParam.dotArray.map((item) => {
 			ctx.lineTo(item[0], item[1])
 		})
 	}

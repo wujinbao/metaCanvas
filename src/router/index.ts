@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import basicShapeView from "../views/basicShapeView.vue";
+import animationExamplesView from "../views/animationExamplesView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -15,6 +16,11 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/mouseSelectorView.vue"),
+  },
+  {
+    path: "/animationExamplesView",
+    name: "animationExamplesView",
+    component: animationExamplesView,
   },
 ];
 

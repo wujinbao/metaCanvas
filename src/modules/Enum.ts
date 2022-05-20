@@ -15,13 +15,33 @@ enum GlobalCompositeOperation {
 }
 
 enum Direction {
-	LEFT = 'left',
-	RIGHT ='right',
-	TOP = 'top',
-	DOWN = 'down'
+	LEFT = "left",
+	RIGHT = "right",
+	TOP = "top",
+	DOWN = "down"
+}
+
+enum SelectorMode {
+	LEFTUPPERCORNER,
+	UPPEREDGEOFFIGURE,
+	UPPERRIGHTCORNER,
+	FIGURERIGHT,
+	LOWERRIGHTCORNER,
+	LOWEREDGEOFFIGURE,
+	LOWERLEFTQUARTER,
+	FIGURELEFT,
+	ROTATIONPOSITION,
+	WITHINGRAPHICS
+}
+
+export default { 
+    GlobalCompositeOperation,
+    Direction,
+	SelectorMode
 }
 
 export { 
     GlobalCompositeOperation,
-    Direction
+    Direction,
+	SelectorMode
 }

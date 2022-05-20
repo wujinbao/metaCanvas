@@ -147,15 +147,20 @@ export default defineComponent({
       let rect = new Rect({
         left: 50,
         top: 50,
-        width: 50,
-        height: 50,
+        width: 100,
+        height: 100,
         stroke: "red",
+        selectable: true,
+        angle: 30,
       });
       let circle = new Circle({
         left: 800,
-        top: 50,
+        top: 100,
         radius: 30,
         fill: "green",
+        angle: 30,
+        eAngle: 1.5,
+        selectable: true,
       });
       canvas.add([rect, circle]);
       this.rect = rect;

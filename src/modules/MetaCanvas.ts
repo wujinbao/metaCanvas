@@ -4,6 +4,8 @@
 /* eslint-disable prettier/prettier */
 import DrawCommon from "./DrawCommon"
 import { PartialCanvasParam } from "./Type"
+import { SelectorMode } from "./Enum"
+import computeMethod from "@/utils/computeMethod"
 
 // 画布类
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -108,28 +110,26 @@ class Canvas {
 				// 保证图形放大、缩小后获取的坐标正确值
 				const scaleWidth: number = drawParam.scaleWidth as number
 				const scaleHeight: number = drawParam.scaleHeight as number
-                const left: number = drawParam.left as number
-                const top: number= drawParam.top as number
-				const resultX: number = (this.lastX - left) / scaleWidth + left
-				const resultY: number = (this.lastY - top) / scaleHeight + top
+                const rotateX: number = drawParam.rotateX as number
+                const rotateY: number= drawParam.rotateY as number
 
-				const angle: number = drawParam.angle as number * 180 / Math.PI
-				// todo 旋转问题
-				// let point: Array<number> = this.rotatePoint(drawParam.left, drawParam.top, resultX, resultY, -angle)
+				// 处理图像旋转后的坐标正确值
+				const angle: number = drawParam.angle as number
+				const point: Array<number> = computeMethod.rotationPoint(rotateX, rotateY, this.lastX, this.lastY, -angle)
+				const resultX: number = (point[0] - rotateX) / scaleWidth + rotateX
+				const resultY: number = (point[1] - rotateY) / scaleHeight + rotateY
 
 				// 需注意一下，map 遍历数组无法通过 return 退出循环
 				for (let i = 0; i < vertexArray.length; i++) {
 					if (resultX >= vertexArray[i][0] - vertexWidth && resultX <= vertexArray[i][0] + vertexWidth && resultY >= vertexArray[i][1] - vertexHeight && resultY <= vertexArray[i][1] + vertexHeight) {
-						// this.canvas.onmousemove = this.throttle(this.onmousemove.bind(this, drawTargetItem, i), this.delay)
-						this.canvas.onmousemove = this.onmousemove.bind(this, drawTargetItem, i)
+						this.canvas.onmousemove = this.onmousemove.bind(this, drawTargetItem, SelectorMode[i])
 
 						return drawTargetItem
 					}
 				}
 
 				if (resultX >= vertexArray[0][0] && resultX <= vertexArray[4][0] && resultY >= vertexArray[0][1] && resultY <= vertexArray[4][1]) {
-					// this.canvas.onmousemove = this.throttle(this.onmousemove.bind(this, drawTargetItem, 9), this.delay)
-					this.canvas.onmousemove = this.onmousemove.bind(this, drawTargetItem, 9)
+					this.canvas.onmousemove = this.onmousemove.bind(this, drawTargetItem, SelectorMode[9])
 				}
 			}
 		})
@@ -140,44 +140,24 @@ class Canvas {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	onmousemove(drawTargetItem: DrawCommon, vertexIndex: number, e: any) {
+	onmousemove(drawTargetItem: DrawCommon, selectorMode: string, e: any) {
 		const currentX: number = e.offsetX
 		const currentY: number = e.offsetY
 		const moveX: number = currentX - this.lastX
 		const moveY: number = currentY - this.lastY
 
-		if (vertexIndex == 9) {
-			drawTargetItem.drawParam.left! += moveX
-			drawTargetItem.drawParam.top! += moveY
+		if (selectorMode == "WITHINGRAPHICS") {
+			drawTargetItem.translation(moveX, moveY)
+		} if (selectorMode == "ROTATIONPOSITION") {
+			drawTargetItem.rotate(this.lastX, this.lastY, currentX, currentY)
 		} else {
-			drawTargetItem.onmousemove(vertexIndex, moveX, moveY)
+			drawTargetItem.scale(selectorMode, moveX, moveY)
 		}
 
 		this.renderAll()
 
 		this.lastX = currentX
 		this.lastY = currentY
-	}
-
-	// 节流，在一定时间内只执行一次
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	throttle(fn: Function, delay: number) {
-		let flag: boolean = true
-    	return function () {
-        	if (!flag) return
-        	flag = false
-        	setTimeout(function () {
-				fn()
-            	flag = true
-			}, delay)
-    	}
-	}
-
-	rotatePoint(centerX: number, centerY: number, startX: number, startY: number, angle: number) {
-		const endX: number = Math.round(centerX + (startX - centerX) * Math.cos(angle * Math.PI / 180) + (centerY - startY) * Math.sin(angle * Math.PI / 180))
-		const endY: number = Math.round(centerY + (startX - centerX) * Math.sin(angle * Math.PI / 180) - (centerY - startY) * Math.cos(angle * Math.PI / 180))
-		const point: Array<number> = [endX, endY]
-		return point
 	}
 }
 

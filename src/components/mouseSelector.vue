@@ -57,15 +57,16 @@ export default defineComponent({
       mouseOperationContent: [
         "1. 图形内按下鼠标可以平移图形。",
         "2. 鼠标点击图形 8 个顶点分别可以左上、向上、右上、向右、右下、向下、左下、向左的放大与缩小图形。",
+        "3. 鼠标点击图形上面顶点可以旋转图形。",
       ],
     };
   },
   // eslint-disable-next-line prettier/prettier
   methods: {
     drawShape: function () {
-      let basicShapeDOM = this.$refs.basicShape;
+      let mouseSelectorDOM = this.$refs.mouseSelector;
       let canvas = new Canvas({
-        dom: basicShapeDOM,
+        dom: mouseSelectorDOM,
       });
       let rect = new Rect({
         left: 50,
@@ -73,6 +74,7 @@ export default defineComponent({
         width: 50,
         height: 50,
         stroke: "red",
+        angle: 30,
       });
       canvas.add([rect]);
       this.rect = rect;

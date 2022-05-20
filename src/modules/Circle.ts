@@ -12,12 +12,12 @@ class Circle extends DrawCommon {
 
 	privateDraw(ctx: CanvasRenderingContext2D) {
 		ctx.arc(
-			0, 
-			0, 
-			this.drawParam.radius!, 
-			this.drawParam.sAngle! * Math.PI,
-			this.drawParam.eAngle! * Math.PI,
-			this.drawParam.counterclockwise!
+			this.drawParam.left - this.drawParam.rotateX, 
+			this.drawParam.top - this.drawParam.rotateY, 
+			this.drawParam.radius, 
+			this.drawParam.sAngle * Math.PI,
+			this.drawParam.eAngle * Math.PI,
+			this.drawParam.counterclockwise
 		)
 
 		this.vertex()
@@ -36,60 +36,74 @@ class Circle extends DrawCommon {
 			[left + radius, top + radius],
 			[left, top + radius],
 			[left - radius, top + radius],
-			[left - radius, top]
+			[left - radius, top],
+			[left, top - radius - this.vertexHeight * 3]
 		]
 	}
 
-	onmousemove(vertexIndex: number, moveX: number, moveY: number) {
+	marginVertex() {
+		const left: number = this.drawParam.left as number
+		const top: number = this.drawParam.top as number
 		const radius: number = this.drawParam.radius as number
 
-		switch (vertexIndex) {
-			case 0:
-				this.drawParam.left! += moveX
-				this.drawParam.top!+= moveY
-				this.drawParam.scaleWidth! -= moveX / radius
-				this.drawParam.scaleHeight! -= moveY / radius
+		this.marginVertexArray = [
+			[left - radius, top - radius],
+			[left + radius, top - radius],
+			[left + radius, top + radius],
+			[left - radius, top + radius],
+		]
+	}
+
+	scale(selectorMode: string, moveX: number, moveY: number) {
+		const radius: number = this.drawParam.radius as number
+
+		switch (selectorMode) {
+			case "LEFTUPPERCORNER":
+				this.drawParam.left += moveX / radius
+				this.drawParam.top += moveY / radius
+				this.drawParam.scaleWidth -= moveX / radius
+				this.drawParam.scaleHeight -= moveY / radius
 				break
 
-			case 1:
-				this.drawParam.top! += moveY
-				this.drawParam.scaleHeigh! -= moveY / radius
+			case "UPPEREDGEOFFIGURE":
+				this.drawParam.top += moveY / radius
+				this.drawParam.scaleHeight -= moveY / radius
 				break
 
-			case 2:
-				this.drawParam.left! += moveX
-				this.drawParam.top! += moveY
-				this.drawParam.scaleWidth! += moveX / radius
-				this.drawParam.scaleHeight! -= moveY / radius
+			case "UPPERRIGHTCORNER":
+				this.drawParam.left += moveX / radius
+				this.drawParam.top += moveY / radius
+				this.drawParam.scaleWidth += moveX / radius
+				this.drawParam.scaleHeight -= moveY / radius
 				break
 
-			case 3:
-				this.drawParam.left! += moveX
-				this.drawParam.scaleWidth! += moveX / radius
+			case "FIGURERIGHT":
+				this.drawParam.left += moveX / radius
+				this.drawParam.scaleWidth += moveX / radius
 				break
 
-			case 4:
-				this.drawParam.left! += moveX
-				this.drawParam.top! += moveY
-				this.drawParam.scaleWidth! += moveX / radius
-				this.drawParam.scaleHeight! += moveY / radius
+			case "LOWERRIGHTCORNER":
+				this.drawParam.left += moveX / radius
+				this.drawParam.top += moveY / radius
+				this.drawParam.scaleWidth += moveX / radius
+				this.drawParam.scaleHeight += moveY / radius
 				break
 
-			case 5:
-				this.drawParam.top! += moveY
-				this.drawParam.scaleHeight! += moveY / radius
+			case "LOWEREDGEOFFIGURE":
+				this.drawParam.top += moveY / radius
+				this.drawParam.scaleHeight += moveY / radius
 				break
 
-			case 6:
-				this.drawParam.left! += moveX
-				this.drawParam.top! += moveY
-				this.drawParam.scaleWidth! -= moveX / radius
-				this.drawParam.scaleHeight! += moveY / radius
+			case "LOWERLEFTQUARTER":
+				this.drawParam.left += moveX / radius
+				this.drawParam.top += moveY / radius
+				this.drawParam.scaleWidth -= moveX / radius
+				this.drawParam.scaleHeight += moveY / radius
 				break
 
-			case 7:
-				this.drawParam.left! += moveX
-				this.drawParam.scaleWidth! -= moveX / radius
+			case "FIGURELEFT":
+				this.drawParam.left += moveX / radius
+				this.drawParam.scaleWidth -= moveX / radius
 				break
 		}
 	}

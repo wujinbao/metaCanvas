@@ -1,7 +1,8 @@
 <template>
   <nav>
     <router-link to="/">basicShape</router-link> |
-    <router-link to="/mouseSelectorView">mouseSelectorView</router-link>
+    <router-link to="/mouseSelectorView">mouseSelectorView</router-link> |
+    <router-link to="/animationExamplesView">animationExamplesView</router-link>
   </nav>
   <router-view />
 </template>

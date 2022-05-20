@@ -11,9 +11,9 @@ class Triangle extends DrawCommon {
 	}
 
 	privateDraw(ctx: CanvasRenderingContext2D) {
-		ctx.moveTo(0, 0)
-		ctx.lineTo(this.drawParam.width! / 2, this.drawParam.height!)
-		ctx.lineTo(-this.drawParam.width! / 2, this.drawParam.height!)
+		ctx.moveTo(this.drawParam.left - this.drawParam.rotateX, this.drawParam.top - this.drawParam.rotateY)
+		ctx.lineTo(this.vertexArray[4][0] - this.drawParam.rotateX, this.vertexArray[4][1] - this.drawParam.rotateY)
+		ctx.lineTo(this.vertexArray[6][0] - this.drawParam.rotateX, this.vertexArray[6][1] - this.drawParam.rotateY)
 		ctx.closePath()
 
 		this.vertex()
@@ -33,58 +33,59 @@ class Triangle extends DrawCommon {
 			[left + width / 2, top + height],
 			[left, top + height],
 			[left - width / 2, top + height],
-			[left - width / 2, top + height / 2]
+			[left - width / 2, top + height / 2],
+			[left, top - this.vertexHeight * 3]
 		]
 	}
 
-	onmousemove(vertexIndex: number, moveX: number, moveY: number) {
+	scale(selectorMode: string, moveX: number, moveY: number) {
 		const scaleWidth: number = this.drawParam.scaleWidth as number
 		const scaleHeight: number = this.drawParam.scaleHeight as number
 
-		switch (vertexIndex) {
-			case 0:
-				this.drawParam.left! += moveX / 2
-				this.drawParam.top! += moveY
-				this.drawParam.width! -= moveX / scaleWidth
-				this.drawParam.height! -= moveY / scaleHeight
+		switch (selectorMode) {
+			case "LEFTUPPERCORNER":
+				this.drawParam.left += moveX / 2
+				this.drawParam.top += moveY
+				this.drawParam.width -= moveX / scaleWidth
+				this.drawParam.height -= moveY / scaleHeight
 				break
 
-			case 1:
-				this.drawParam.top! += moveY
-				this.drawParam.height! -= moveY / scaleHeight
+			case "UPPEREDGEOFFIGURE":
+				this.drawParam.top += moveY
+				this.drawParam.height -= moveY / scaleHeight
 				break
 
-			case 2:
-				this.drawParam.left! += moveX / 2
-				this.drawParam.top! += moveY
-				this.drawParam.width! += moveX / scaleWidth
-				this.drawParam.height! -= moveY / scaleHeight
+			case "UPPERRIGHTCORNER":
+				this.drawParam.left += moveX / 2
+				this.drawParam.top += moveY
+				this.drawParam.width += moveX / scaleWidth
+				this.drawParam.height -= moveY / scaleHeight
 				break
 
-			case 3:
-				this.drawParam.left! += moveX / 2
-				this.drawParam.width! += moveX / scaleWidth
+			case "FIGURERIGHT":
+				this.drawParam.left += moveX / 2
+				this.drawParam.width += moveX / scaleWidth
 				break
 
-			case 4:
-				this.drawParam.left! += moveX / 2
-				this.drawParam.width! += moveX / scaleWidth
-				this.drawParam.height! += moveY / scaleHeight
+			case "LOWERRIGHTCORNER":
+				this.drawParam.left += moveX / 2
+				this.drawParam.width += moveX / scaleWidth
+				this.drawParam.height += moveY / scaleHeight
 				break
 
-			case 5:
-				this.drawParam.height! += moveY / scaleHeight
+			case "LOWEREDGEOFFIGURE":
+				this.drawParam.height += moveY / scaleHeight
 				break
 
-			case 6:
-				this.drawParam.left! += moveX / 2
-				this.drawParam.width! -= moveX / scaleWidth
-				this.drawParam.height! += moveY / scaleHeight
+			case "LOWERLEFTQUARTER":
+				this.drawParam.left += moveX / 2
+				this.drawParam.width -= moveX / scaleWidth
+				this.drawParam.height += moveY / scaleHeight
 				break
 
-			case 7:
-				this.drawParam.left! += moveX / 2
-				this.drawParam.width! -= moveX / scaleWidth
+			case "FIGURELEFT":
+				this.drawParam.left += moveX / 2
+				this.drawParam.width -= moveX / scaleWidth
 				break
 		}
 	}

@@ -41,6 +41,8 @@ type DrawParam = {
 	lineWidth: number,
 	miterLimit: number,
 	angle: number,
+	rotateX: number,
+	rotateY: number,
 	scaleWidth: number,
 	scaleHeight: number,
 	globalAlpha: number,
@@ -53,7 +55,7 @@ type DrawParam = {
 // Partial 变为可选参数
 type PartialDrawParam = Partial<DrawParam>
 
-type AnimateOption = {
+type AnimationOption = {
 	vX: number,
 	vY: number,
 	sX: number,
@@ -62,10 +64,10 @@ type AnimateOption = {
     [attr: string]: any
 }
 
-type PartialAnimateOption = Partial<AnimateOption>
+type PartialAnimationOption = Partial<AnimationOption>
 
 export { 
     PartialCanvasParam,
     PartialDrawParam,
-    PartialAnimateOption
+    PartialAnimationOption
 }
