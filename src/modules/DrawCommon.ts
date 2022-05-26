@@ -43,8 +43,7 @@ class DrawCommon {
     vertexArray: Array<[number, number]> = []
 	marginVertexArray: Array<[number, number]> = []
 	marginParamArray: Array<number> = []
-	vertexWidth: number = 10
-	vertexHeight: number = 10
+	vertexMargin: number = 10
 	requestID: number
 	animationOption: PartialAnimationOption = {
 		vX: 0, vY: 0, sX: 0, sY: 0
@@ -63,7 +62,6 @@ class DrawCommon {
 			this.marginVertex()
 			this.marginParam()
         }
-		
     }
 
     get(attr: string) {
@@ -129,8 +127,9 @@ class DrawCommon {
     // 图形选择器 - 根据顶点绘制
 	vertexDraw(ctx: CanvasRenderingContext2D) {
 		const vertexArray: Array<[number, number]> = this.vertexArray
-		const vertexWidth: number = this.vertexWidth
-		const vertexHeight: number = this.vertexHeight
+		const vertexMargin: number = this.vertexMargin
+		const scaleWidth: number = this.drawParam.scaleWidth
+		const scaleHeight: number = this.drawParam.scaleHeight
 		ctx.save()
 		ctx.lineCap = 'butt'
 		ctx.lineJoin = 'miter'
@@ -144,7 +143,7 @@ class DrawCommon {
 		ctx.beginPath()
 		ctx.strokeRect(vertexArray[0][0], vertexArray[0][1], vertexArray[2][0] - vertexArray[0][0], vertexArray[4][1] - vertexArray[0][1])
 		vertexArray.map((item) => {
-			ctx.fillRect(item[0] - vertexWidth / 2, item[1] - vertexHeight / 2, vertexWidth, vertexHeight)
+			ctx.fillRect(item[0] - vertexMargin / scaleWidth / 2, item[1] - vertexMargin / scaleHeight / 2, vertexMargin / scaleWidth, vertexMargin / scaleHeight)
 		})
 		ctx.closePath()
 		ctx.stroke()
@@ -153,7 +152,7 @@ class DrawCommon {
 
 	// 旋转中心位置
 	rotationPoint() {
-		this.drawParam.rotateX = this.vertexArray[3][0] - (this.vertexArray[3][0] - this.vertexArray[7][0]) / 2
+		this.drawParam.rotateX = this.vertexArray[1][0]
 		this.drawParam.rotateY = this.vertexArray[3][1]
 	}
 

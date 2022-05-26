@@ -103,8 +103,7 @@ class Canvas {
 		this.drawTargetArray.map((drawTargetItem) => {
 			const drawParam = drawTargetItem.drawParam
 			if (drawParam.selectable) {
-				const vertexWidth: number = drawTargetItem.vertexWidth
-				const vertexHeight: number = drawTargetItem.vertexHeight
+				const vertexMargin: number = drawTargetItem.vertexMargin
 				const vertexArray = drawTargetItem.vertexArray
 				
 				// 保证图形放大、缩小后获取的坐标正确值
@@ -121,7 +120,7 @@ class Canvas {
 
 				// 需注意一下，map 遍历数组无法通过 return 退出循环
 				for (let i = 0; i < vertexArray.length; i++) {
-					if (resultX >= vertexArray[i][0] - vertexWidth && resultX <= vertexArray[i][0] + vertexWidth && resultY >= vertexArray[i][1] - vertexHeight && resultY <= vertexArray[i][1] + vertexHeight) {
+					if (resultX >= vertexArray[i][0] - vertexMargin && resultX <= vertexArray[i][0] + vertexMargin && resultY >= vertexArray[i][1] - vertexMargin && resultY <= vertexArray[i][1] + vertexMargin) {
 						this.canvas.onmousemove = this.onmousemove.bind(this, drawTargetItem, SelectorMode[i])
 
 						return drawTargetItem

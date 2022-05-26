@@ -155,7 +155,8 @@ export default defineComponent({
         left: 800,
         top: 100,
         radius: 30,
-        fill: "green",
+        stroke: "green",
+        selectable: true,
       });
       canvas.add([rect, circle]);
       this.rect = rect;

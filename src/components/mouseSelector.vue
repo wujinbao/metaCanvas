@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Canvas, Rect, Circle } from "@/modules/index";
+import { Canvas, Rect, Circle, Triangle, Ellipse } from "@/modules/index";
 
 export default defineComponent({
   name: "mouseSelector",
@@ -69,12 +69,14 @@ export default defineComponent({
         dom: mouseSelectorDOM,
       });
       let rect = new Rect({
-        left: 50,
-        top: 50,
-        width: 50,
-        height: 50,
+        left: 200,
+        top: 200,
+        width: 200,
+        height: 100,
         stroke: "red",
-        angle: 30,
+        scaleWidth: 2,
+        scaleHeight: 2,
+        // angle: 30,
       });
       canvas.add([rect]);
       this.rect = rect;

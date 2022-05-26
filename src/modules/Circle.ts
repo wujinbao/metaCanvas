@@ -38,20 +38,23 @@ class Circle extends DrawCommon {
 			[left, top + radius],
 			[left - radius, top + radius],
 			[left - radius, top],
-			[left, top - radius - this.vertexHeight * 3]
+			[left, top - radius - this.vertexMargin * 2]
 		]
 	}
 
 	marginVertex() {
 		const left: number = this.drawParam.left as number
 		const top: number = this.drawParam.top as number
+		// 保证图形放大、缩小后获取的坐标正确值
+		const scaleWidth: number = this.drawParam.scaleWidth as number
+		const scaleHeight: number = this.drawParam.scaleHeight as number
 		const radius: number = this.drawParam.radius as number
 
 		this.marginVertexArray = [
-			[left - radius, top - radius],
-			[left + radius, top - radius],
-			[left + radius, top + radius],
-			[left - radius, top + radius],
+			[left - radius - radius* (scaleWidth - 1), top - radius - radius* (scaleHeight - 1)],
+			[left + radius + radius* (scaleWidth - 1), top - radius - radius* (scaleHeight - 1)],
+			[left + radius + radius* (scaleWidth - 1), top + radius + radius* (scaleHeight - 1)],
+			[left - radius - radius* (scaleWidth - 1), top + radius + radius* (scaleHeight - 1)],
 		]
 
 		this.marginParam()

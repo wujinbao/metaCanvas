@@ -17,6 +17,7 @@ class Triangle extends DrawCommon {
 		ctx.closePath()
 
 		this.vertex()
+		this.marginVertex()
 	}
 
 	vertex() {
@@ -34,8 +35,27 @@ class Triangle extends DrawCommon {
 			[left, top + height],
 			[left - width / 2, top + height],
 			[left - width / 2, top + height / 2],
-			[left, top - this.vertexHeight * 3]
+			[left, top - this.vertexMargin * 2]
 		]
+	}
+
+	marginVertex() {
+		const left: number = this.drawParam.left as number
+		const top: number = this.drawParam.top as number
+		// 保证图形放大、缩小后获取的坐标正确值
+		const scaleWidth: number = this.drawParam.scaleWidth as number
+		const scaleHeight: number = this.drawParam.scaleHeight as number
+		const width: number = this.drawParam.width as number
+		const height: number = this.drawParam.height as number
+
+		this.marginVertexArray = [
+			[left - width / 2 - width / 2 * (scaleWidth - 1), top -  height / 2 * (scaleHeight - 1)],
+			[left + width / 2 + width / 2 * (scaleWidth - 1), top - height / 2 * (scaleHeight - 1)],
+			[left + width / 2 + width / 2 * (scaleWidth - 1), top + height + height / 2 * (scaleHeight - 1)],
+			[left - width / 2 - width / 2 * (scaleWidth - 1), top + height + height / 2 * (scaleHeight - 1)]
+		]
+
+		this.marginParam()
 	}
 
 	scale(selectorMode: string, moveX: number, moveY: number) {
