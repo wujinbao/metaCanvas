@@ -71,12 +71,42 @@ export default defineComponent({
       let rect = new Rect({
         left: 200,
         top: 200,
-        width: 200,
-        height: 100,
+        width: 100,
+        height: 50,
         stroke: "red",
         scaleWidth: 2,
         scaleHeight: 2,
         // angle: 30,
+      });
+      let rect1 = new Rect({
+        left: 200,
+        top: 200,
+        width: 100,
+        height: 50,
+        stroke: "red",
+        scaleWidth: 2,
+        scaleHeight: 2,
+        angle: 30,
+      });
+      let rect2 = new Rect({
+        left: 250,
+        top: 200,
+        width: 200,
+        height: 50,
+        stroke: "green",
+        scaleWidth: 2,
+        scaleHeight: 2,
+        // angle: 30,
+      });
+      let rect3 = new Rect({
+        left: 250,
+        top: 200,
+        width: 200,
+        height: 50,
+        stroke: "green",
+        scaleWidth: 2,
+        scaleHeight: 2,
+        angle: 30,
       });
       canvas.add([rect]);
       this.rect = rect;

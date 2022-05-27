@@ -6,8 +6,8 @@
 * angle 旋转角度
 */
 function rotationPoint(centerX: number, centerY: number, startX: number, startY: number, angle: number) {
-    const endX: number = Math.round(centerX + (startX - centerX) * Math.cos(angle * Math.PI / 180) + (centerY - startY) * Math.sin(angle * Math.PI / 180))
-    const endY: number = Math.round(centerY + (startX - centerX) * Math.sin(angle * Math.PI / 180) - (centerY - startY) * Math.cos(angle * Math.PI / 180))
+    const endX: number = Math.round(centerX + (startX - centerX) * Math.cos(angle * Math.PI / 180) - (startY - centerY) * Math.sin(angle * Math.PI / 180))
+    const endY: number = Math.round(centerY + (startX - centerX) * Math.sin(angle * Math.PI / 180) + (startY - centerY) * Math.cos(angle * Math.PI / 180))
     const point: Array<number> = [endX, endY]
 
     return point

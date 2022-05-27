@@ -82,6 +82,11 @@ class DrawCommon {
     draw(canvas: Canvas) {
 		this.canvas = canvas
 		const ctx: CanvasRenderingContext2D = canvas.ctx
+		
+		// 测试旋转中心代码
+		ctx.fillStyle = "green"
+		ctx.fillRect(this.drawParam.rotateX - 2.5, this.drawParam.rotateY - 2.5, 5, 5)
+
 		ctx.save()
 		ctx.beginPath()
 		ctx.shadowColor = this.drawParam.shadowColor as string

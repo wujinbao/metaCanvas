@@ -67,67 +67,71 @@ class Rect extends DrawCommon {
 		const scaleHeight: number = this.drawParam.scaleHeight as number
 
 		/* 
-		* 处理旋转中心移动后 left、top 的变化值
-		* moveX / scaleWidth / 2 是旋转中心的横向变量值，除以 scaleWidth 即为一份变量值，那么 left 移动的变量值为一份变量值乘以 scaleWidth - 1
-		* moveY / scaleHeight / 2 是旋转中心的纵向变量值，除以 scaleHeight 即为一份变量值，那么 top 移动的变量值为一份变量值乘以 scaleHeight - 1
+		* 分析宽度高度变化后，使旋转中心移动之后 left、top 的变化值
+		* moveX / scaleWidth 是增加的宽度，实际扩大 moveX / scaleWidth * scaleWidth 即 moveX，那么旋转中心 rotateX 增加 moveX / 2。
+		* moveY / scaleHeight 是增加的宽度，实际扩大 moveY / scaleHeight * scaleHeight 即 moveY，那么旋转中心 rotateY 增加 moveY / 2。
+		* left 与 旋转中心 rotateX 之间隔 1 / scaleWidth 的距离。
+		* top 与 旋转中心 rotateY 之间隔 1 / scaleHeight 的距离。
 		*/
-		const variableX: number = moveX / scaleWidth / 2 / scaleWidth * (scaleWidth - 1)
-		const variableY: number = moveY / scaleHeight / 2 / scaleHeight * (scaleHeight - 1)
 
 		switch (selectorMode) {
 			case "LEFTUPPERCORNER":
-				this.drawParam.left += moveX / scaleWidth + variableX
-				this.drawParam.rotateX += moveX / scaleWidth / 2
-				this.drawParam.top += moveY / scaleHeight + variableY
-				this.drawParam.rotateY += moveY / scaleHeight / 2
+				this.drawParam.left += moveX / 2 + moveX / scaleWidth / 2
+				this.drawParam.rotateX += moveX / 2
+				this.drawParam.top += moveY / 2 + moveY / scaleHeight / 2
+				this.drawParam.rotateY += moveY / 2
 				this.drawParam.width -= moveX / scaleWidth
 				this.drawParam.height -= moveY / scaleHeight
 				break
 
 			case "UPPEREDGEOFFIGURE":
-				this.drawParam.top += moveY / scaleHeight + variableY
-				this.drawParam.rotateY += moveY / scaleHeight / 2
+				this.drawParam.top += moveY / 2 + moveY / scaleHeight / 2
+				this.drawParam.rotateY += moveY / 2
 				this.drawParam.height -= moveY / scaleHeight
 				break
 
 			case "UPPERRIGHTCORNER":
-				this.drawParam.top += moveY / scaleHeight + variableY
-				this.drawParam.rotateY += moveY / scaleHeight / 2
+				this.drawParam.left += moveX / 2 - moveX / scaleWidth / 2
+				this.drawParam.rotateX += moveX / 2
+				this.drawParam.top += moveY / 2 + moveY / scaleHeight / 2
+				this.drawParam.rotateY += moveY / 2
 				this.drawParam.width += moveX / scaleWidth
 				this.drawParam.height -= moveY / scaleHeight
 				break
 
 			case "FIGURERIGHT":
-				this.drawParam.left += variableX
-				this.drawParam.rotateX += moveX / scaleWidth / 2
+				this.drawParam.left += moveX / 2 - moveX / scaleWidth / 2
+				this.drawParam.rotateX += moveX / 2
 				this.drawParam.width += moveX / scaleWidth
 				break
 
 			case "LOWERRIGHTCORNER":
-				this.drawParam.left += variableX
-				this.drawParam.rotateX += moveX / scaleWidth / 2
-				this.drawParam.top += variableY
-				this.drawParam.rotateY += moveY / scaleHeight / 2
+				this.drawParam.left += moveX / 2 - moveX / scaleWidth / 2
+				this.drawParam.rotateX += moveX / 2
+				this.drawParam.top += moveY / 2 - moveY / scaleHeight / 2
+				this.drawParam.rotateY += moveY / 2
 				this.drawParam.width += moveX / scaleWidth
 				this.drawParam.height += moveY / scaleHeight
 				break
 
 			case "LOWEREDGEOFFIGURE":
-				this.drawParam.top += variableY
-				this.drawParam.rotateY += moveY / scaleHeight / 2
+				this.drawParam.top += moveY / 2 - moveY / scaleHeight / 2
+				this.drawParam.rotateY += moveY / 2
 				this.drawParam.height += moveY / scaleHeight
 				break
 
 			case "LOWERLEFTQUARTER":
-				this.drawParam.left += moveX / scaleWidth + variableX
-				this.drawParam.rotateX += moveX / scaleWidth / 2
+				this.drawParam.left += moveX / 2 + moveX / scaleWidth / 2
+				this.drawParam.rotateX += moveX / 2
+				this.drawParam.top += moveY / 2 - moveY / scaleHeight / 2
+				this.drawParam.rotateY += moveY / 2
 				this.drawParam.width -= moveX / scaleWidth
 				this.drawParam.height += moveY / scaleHeight
 				break
 
 			case "FIGURELEFT":
-				this.drawParam.left += moveX / scaleWidth + variableX
-				this.drawParam.rotateX += moveX / scaleWidth / 2
+				this.drawParam.left += moveX / 2 + moveX / scaleWidth / 2
+				this.drawParam.rotateX += moveX / 2
 				this.drawParam.width -= moveX / scaleWidth
 				break
 		}
