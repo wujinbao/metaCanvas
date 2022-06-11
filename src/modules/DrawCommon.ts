@@ -37,7 +37,8 @@ class DrawCommon {
         scaleHeight: 1,
         globalAlpha: 1,
         globalCompositeOperation: GlobalCompositeOperation.SOURCEOVER,
-        selectable: false
+        selectable: false,
+		positiveScaling: false
     }
     canvas: Canvas
     vertexArray: Array<[number, number]> = []
@@ -80,12 +81,17 @@ class DrawCommon {
 	}
 
     draw(canvas: Canvas) {
+		this.vertex()
+		this.rotationPoint()
+		this.marginVertex()
+
 		this.canvas = canvas
 		const ctx: CanvasRenderingContext2D = canvas.ctx
 		
 		// 测试旋转中心代码
 		ctx.fillStyle = "green"
 		ctx.fillRect(this.drawParam.rotateX - 2.5, this.drawParam.rotateY - 2.5, 5, 5)
+		console.log(111, this.drawParam.rotateX, this.drawParam.rotateY)
 
 		ctx.save()
 		ctx.beginPath()
@@ -101,6 +107,7 @@ class DrawCommon {
 		ctx.globalCompositeOperation = this.drawParam.globalCompositeOperation as GlobalCompositeOperation
 		ctx.translate(this.drawParam.rotateX as number, this.drawParam.rotateY as number)
 		ctx.rotate(this.drawParam.angle as number * Math.PI / 180)
+		ctx.translate(-this.drawParam.rotateX as number, -this.drawParam.rotateY as number)
 		ctx.scale(this.drawParam.scaleWidth as number, this.drawParam.scaleHeight as number)
 		this.privateDraw(ctx)
 		if (this.drawParam.fill && this.drawParam.stroke) {
@@ -113,7 +120,7 @@ class DrawCommon {
 			ctx.fillStyle = this.drawParam.fill
 			ctx.fill()
 		} else {
-			ctx.strokeStyle = this.drawParam.stroke as string
+			ctx.strokeStyle = this.drawParam.stroke
 			ctx.stroke()
 		}
 		ctx.closePath()
@@ -144,11 +151,12 @@ class DrawCommon {
 		ctx.globalCompositeOperation = 'source-over'
 		ctx.strokeStyle = '#00a7d0'
 		ctx.fillStyle = '#00a7d0'
-		ctx.translate(-this.drawParam.rotateX as number, -this.drawParam.rotateY as number)
 		ctx.beginPath()
 		ctx.strokeRect(vertexArray[0][0], vertexArray[0][1], vertexArray[2][0] - vertexArray[0][0], vertexArray[4][1] - vertexArray[0][1])
-		vertexArray.map((item) => {
-			ctx.fillRect(item[0] - vertexMargin / scaleWidth / 2, item[1] - vertexMargin / scaleHeight / 2, vertexMargin / scaleWidth, vertexMargin / scaleHeight)
+		vertexArray.map((item, index) => {
+			if (!this.drawParam.positiveScaling || index % 2 == 0) {
+				ctx.fillRect(item[0] - vertexMargin / scaleWidth / 2, item[1] - vertexMargin / scaleHeight / 2, vertexMargin / scaleWidth, vertexMargin / scaleHeight)
+			}
 		})
 		ctx.closePath()
 		ctx.stroke()

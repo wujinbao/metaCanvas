@@ -17,16 +17,13 @@ class Ellipse extends DrawCommon {
 		const r = (rX > rY) ? rX : rY
 
 		if (ctx.ellipse) {
-			ctx.ellipse(this.drawParam.left - this.drawParam.rotateX, this.drawParam.top - this.drawParam.rotateY, rX, rY, 0, drawParam.sAngle as number * Math.PI,
+			ctx.ellipse(this.drawParam.left, this.drawParam.top, rX, rY, 0, drawParam.sAngle as number * Math.PI,
 			drawParam.eAngle as number * Math.PI,
 			drawParam.counterclockwise)
 		} else {
     		ctx.scale(rX / r, rY / r)
     		ctx.arc(this.drawParam.left, this.drawParam.top, r, 0, 2 * Math.PI, false)
 		}
-
-		this.vertex()
-		this.marginVertex()
 	}
 
 	vertex() {
@@ -49,19 +46,18 @@ class Ellipse extends DrawCommon {
 	}
 
 	marginVertex() {
-		const left: number = this.drawParam.left as number
-		const top: number = this.drawParam.top as number
-		// 保证图形放大、缩小后获取的坐标正确值
+		const rotateX: number = this.drawParam.rotateX
+		const rotateY: number = this.drawParam.rotateY
 		const scaleWidth: number = this.drawParam.scaleWidth as number
 		const scaleHeight: number = this.drawParam.scaleHeight as number
 		const rX: number = this.drawParam.rX as number
 		const rY: number = this.drawParam.rY as number
 
 		this.marginVertexArray = [
-			[left - rX - rX * (scaleWidth - 1), top - rY - rY * (scaleHeight - 1)],
-			[left + rX + rX * (scaleWidth - 1), top - rY - rY * (scaleHeight - 1)],
-			[left + rX + rX * (scaleWidth - 1), top + rY + rY * (scaleHeight - 1)],
-			[left - rX - rX * (scaleWidth - 1), top + rY + rY * (scaleHeight - 1)],
+			[rotateX - rX * scaleWidth, rotateY - rY * scaleHeight],
+			[rotateX + rX * scaleWidth, rotateY - rY * scaleHeight],
+			[rotateX + rX * scaleWidth, rotateY + rY * scaleHeight],
+			[rotateX - rX * scaleWidth, rotateY + rY * scaleHeight],
 		]
 
 		this.marginParam()
@@ -71,53 +67,58 @@ class Ellipse extends DrawCommon {
 		const scaleWidth: number = this.drawParam.scaleWidth as number
 		const scaleHeight: number = this.drawParam.scaleHeight as number
 
+		// 是否正比例 positiveScaling 放大缩小
+		// moveX、moveY 一正一负时（即右上角和左下角）需处理
+		const ratio: number = (this.drawParam.rY * scaleHeight) / (this.drawParam.rX * scaleWidth)
+		moveY = this.drawParam.positiveScaling ? moveX * moveY <= 0 ? -moveX * ratio : moveX * ratio : moveY
+
 		switch (selectorMode) {
 			case "LEFTUPPERCORNER":
-				this.drawParam.left += moveX / scaleWidth
-				this.drawParam.top += moveY / scaleHeight
-				this.drawParam.rX -= moveX / scaleWidth
-				this.drawParam.rY -= moveY / scaleHeight
+				this.drawParam.left += moveX / 2
+				this.drawParam.rX -= moveX / scaleWidth / 2
+				this.drawParam.top += moveY / 2
+				this.drawParam.rY -= moveY / scaleHeight / 2
 			break
 
 			case "UPPEREDGEOFFIGURE":
-				this.drawParam.top += moveY / scaleHeight
-				this.drawParam.rY -= moveY / scaleHeight
+				this.drawParam.top += moveY / 2
+				this.drawParam.rY -= moveY / scaleHeight / 2
 			break
 
 			case "UPPERRIGHTCORNER":
-				this.drawParam.left += moveX / scaleWidth
-				this.drawParam.top += moveY / scaleHeight
-				this.drawParam.rX += moveX / scaleWidth
-				this.drawParam.rY -= moveY / scaleHeight
+				this.drawParam.left += moveX / 2
+				this.drawParam.rX += moveX / scaleWidth / 2
+				this.drawParam.top += moveY / 2
+				this.drawParam.rY -= moveY / scaleHeight / 2
 			break
 
 			case "FIGURERIGHT":
-				this.drawParam.left += moveX / scaleWidth
-				this.drawParam.rX += moveX / scaleWidth
+				this.drawParam.left += moveX / 2
+				this.drawParam.rX += moveX / scaleWidth / 2
 			break
 
 			case "LOWERRIGHTCORNER":
-				this.drawParam.left += moveX / scaleWidth
-				this.drawParam.top += moveY / scaleHeight
-				this.drawParam.rX += moveX / scaleWidth
-				this.drawParam.rY += moveY / scaleHeight
+				this.drawParam.left += moveX / 2
+				this.drawParam.rX += moveX / scaleWidth / 2
+				this.drawParam.top += moveY / 2
+				this.drawParam.rY += moveY / scaleHeight / 2
 			break
 
 			case "LOWEREDGEOFFIGURE":
-				this.drawParam.top += moveY / scaleHeight
-				this.drawParam.rY += moveY / scaleHeight
+				this.drawParam.top += moveY / 2
+				this.drawParam.rY += moveY / scaleHeight / 2
 			break
 
 			case "LOWERLEFTQUARTER":
-				this.drawParam.left += moveX / scaleWidth
-				this.drawParam.top += moveY / scaleHeight
-				this.drawParam.rX -= moveX / scaleWidth
-				this.drawParam.rY += moveY / scaleHeight
+				this.drawParam.left += moveX / 2
+				this.drawParam.rX -= moveX / scaleWidth / 2
+				this.drawParam.top += moveY / 2
+				this.drawParam.rY += moveY / scaleHeight / 2
 			break
 
 			case "FIGURELEFT":
-				this.drawParam.left += moveX / scaleWidth
-				this.drawParam.rX -= moveX / scaleWidth
+				this.drawParam.left += moveX / 2
+				this.drawParam.rX -= moveX / scaleWidth / 2
 			break
 		}
 	}

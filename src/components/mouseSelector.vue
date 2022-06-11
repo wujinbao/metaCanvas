@@ -34,14 +34,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Canvas, Rect, Circle, Triangle, Ellipse } from "@/modules/index";
+import { Canvas, Rect } from "@/modules/index";
 
 export default defineComponent({
   name: "mouseSelector",
   data() {
     return {
       rect: new Rect(),
-      circle: new Circle(),
       Title: "鼠标操作图形",
       contentTitle: "绘制图形步骤：",
       contentArray: [
@@ -69,14 +68,15 @@ export default defineComponent({
         dom: mouseSelectorDOM,
       });
       let rect = new Rect({
-        left: 200,
-        top: 200,
+        left: 100,
+        top: 50,
         width: 100,
         height: 50,
         stroke: "red",
-        scaleWidth: 2,
-        scaleHeight: 2,
-        // angle: 30,
+        // scaleWidth: 2,
+        // scaleHeight: 2,
+        // positiveScaling: true,
+        angle: 30,
       });
       let rect1 = new Rect({
         left: 200,
@@ -86,7 +86,7 @@ export default defineComponent({
         stroke: "red",
         scaleWidth: 2,
         scaleHeight: 2,
-        angle: 30,
+        angle: 90,
       });
       let rect2 = new Rect({
         left: 250,
@@ -99,14 +99,14 @@ export default defineComponent({
         // angle: 30,
       });
       let rect3 = new Rect({
-        left: 250,
-        top: 200,
+        left: 150,
+        top: 300,
         width: 200,
         height: 50,
         stroke: "green",
         scaleWidth: 2,
         scaleHeight: 2,
-        angle: 30,
+        angle: 90,
       });
       canvas.add([rect]);
       this.rect = rect;

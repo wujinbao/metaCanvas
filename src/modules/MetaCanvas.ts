@@ -117,13 +117,15 @@ class Canvas {
 				const point: Array<number> = computeMethod.rotationPoint(rotateX, rotateY, this.lastX, this.lastY, -angle)
 				const resultX: number = (point[0] - rotateX) / scaleWidth + rotateX
 				const resultY: number = (point[1] - rotateY) / scaleHeight + rotateY
-
+				console.log(this.lastX, this.lastY)
 				// 需注意一下，map 遍历数组无法通过 return 退出循环
 				for (let i = 0; i < vertexArray.length; i++) {
-					if (resultX >= vertexArray[i][0] - vertexMargin && resultX <= vertexArray[i][0] + vertexMargin && resultY >= vertexArray[i][1] - vertexMargin && resultY <= vertexArray[i][1] + vertexMargin) {
-						this.canvas.onmousemove = this.onmousemove.bind(this, drawTargetItem, SelectorMode[i])
+					if (!drawParam.positiveScaling || i % 2 == 0) {
+						if (resultX >= vertexArray[i][0] - vertexMargin / 2 && resultX <= vertexArray[i][0] + vertexMargin / 2 && resultY >= vertexArray[i][1] - vertexMargin / 2 && resultY <= vertexArray[i][1] + vertexMargin / 2) {	
+							this.canvas.onmousemove = this.onmousemove.bind(this, drawTargetItem, SelectorMode[i])
 
-						return drawTargetItem
+							return drawTargetItem
+						}
 					}
 				}
 

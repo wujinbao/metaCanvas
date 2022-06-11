@@ -12,8 +12,8 @@ class Circle extends DrawCommon {
 
 	privateDraw(ctx: CanvasRenderingContext2D) {
 		ctx.arc(
-			this.drawParam.left - this.drawParam.rotateX, 
-			this.drawParam.top - this.drawParam.rotateY, 
+			this.drawParam.left, 
+			this.drawParam.top, 
 			this.drawParam.radius, 
 			this.drawParam.sAngle * Math.PI,
 			this.drawParam.eAngle * Math.PI,
@@ -43,73 +43,90 @@ class Circle extends DrawCommon {
 	}
 
 	marginVertex() {
-		const left: number = this.drawParam.left as number
-		const top: number = this.drawParam.top as number
-		// 保证图形放大、缩小后获取的坐标正确值
+		const rotateX: number = this.drawParam.rotateX
+		const rotateY: number = this.drawParam.rotateY
 		const scaleWidth: number = this.drawParam.scaleWidth as number
 		const scaleHeight: number = this.drawParam.scaleHeight as number
 		const radius: number = this.drawParam.radius as number
 
 		this.marginVertexArray = [
-			[left - radius - radius* (scaleWidth - 1), top - radius - radius* (scaleHeight - 1)],
-			[left + radius + radius* (scaleWidth - 1), top - radius - radius* (scaleHeight - 1)],
-			[left + radius + radius* (scaleWidth - 1), top + radius + radius* (scaleHeight - 1)],
-			[left - radius - radius* (scaleWidth - 1), top + radius + radius* (scaleHeight - 1)],
+			[rotateX - radius * scaleWidth, rotateY - radius * scaleHeight],
+			[rotateX + radius * scaleWidth, rotateY - radius * scaleHeight],
+			[rotateX + radius * scaleWidth, rotateY + radius * scaleHeight],
+			[rotateX - radius * scaleWidth, rotateY + radius * scaleHeight],
 		]
 
 		this.marginParam()
 	}
 
 	scale(selectorMode: string, moveX: number, moveY: number) {
+		const scaleWidth: number = this.drawParam.scaleWidth as number
+		const scaleHeight: number = this.drawParam.scaleHeight as number
 		const radius: number = this.drawParam.radius as number
+
+		// 是否正比例 positiveScaling 放大缩小
+		const ratio: number = scaleHeight / scaleWidth
+		moveY = this.drawParam.positiveScaling ? moveX * moveY <= 0 ? -moveX * ratio : moveX * ratio : moveY
 
 		switch (selectorMode) {
 			case "LEFTUPPERCORNER":
-				this.drawParam.left += moveX / radius
-				this.drawParam.top += moveY / radius
-				this.drawParam.scaleWidth -= moveX / radius
-				this.drawParam.scaleHeight -= moveY / radius
+				this.drawParam.left += moveX / 2
+				this.drawParam.rotateX += moveX / 2
+				this.drawParam.top += moveY / 2
+				this.drawParam.rotateY += moveY / 2
+				this.drawParam.scaleWidth -= moveX / 2 / radius
+				this.drawParam.scaleHeight -= moveY / 2 / radius
 				break
 
 			case "UPPEREDGEOFFIGURE":
-				this.drawParam.top += moveY / radius
-				this.drawParam.scaleHeight -= moveY / radius
+				this.drawParam.top += moveY / 2
+				this.drawParam.rotateY += moveY / 2
+				this.drawParam.scaleHeight -= moveY / 2 / radius
 				break
 
 			case "UPPERRIGHTCORNER":
-				this.drawParam.left += moveX / radius
-				this.drawParam.top += moveY / radius
-				this.drawParam.scaleWidth += moveX / radius
-				this.drawParam.scaleHeight -= moveY / radius
+				this.drawParam.left += moveX / 2
+				this.drawParam.rotateX += moveX / 2
+				this.drawParam.top += moveY / 2
+				this.drawParam.rotateY += moveY / 2
+				this.drawParam.scaleWidth += moveX / 2 / radius
+				this.drawParam.scaleHeight -= moveY / 2 / radius
 				break
 
 			case "FIGURERIGHT":
-				this.drawParam.left += moveX / radius
-				this.drawParam.scaleWidth += moveX / radius
+				this.drawParam.left += moveX / 2
+				this.drawParam.rotateX += moveX / 2
+				this.drawParam.scaleWidth += moveX / 2 / radius
 				break
 
 			case "LOWERRIGHTCORNER":
-				this.drawParam.left += moveX / radius
-				this.drawParam.top += moveY / radius
-				this.drawParam.scaleWidth += moveX / radius
-				this.drawParam.scaleHeight += moveY / radius
+				this.drawParam.left += moveX / 2
+				this.drawParam.rotateX += moveX / 2
+				this.drawParam.top += moveY / 2
+				this.drawParam.rotateY += moveY / 2
+				this.drawParam.scaleWidth += moveX / 2 / radius
+				this.drawParam.scaleHeight += moveY / 2 / radius
 				break
 
 			case "LOWEREDGEOFFIGURE":
-				this.drawParam.top += moveY / radius
-				this.drawParam.scaleHeight += moveY / radius
+				this.drawParam.top += moveY / 2
+				this.drawParam.rotateY += moveY / 2
+				this.drawParam.scaleHeight += moveY / 2 / radius
 				break
 
 			case "LOWERLEFTQUARTER":
-				this.drawParam.left += moveX / radius
-				this.drawParam.top += moveY / radius
-				this.drawParam.scaleWidth -= moveX / radius
-				this.drawParam.scaleHeight += moveY / radius
+				this.drawParam.left += moveX / 2
+				this.drawParam.rotateX += moveX / 2
+				this.drawParam.top += moveY / 2
+				this.drawParam.rotateY += moveY / 2
+				this.drawParam.scaleWidth -= moveX / 2 / radius
+				this.drawParam.scaleHeight += moveY / 2 / radius
 				break
 
 			case "FIGURELEFT":
-				this.drawParam.left += moveX / radius
-				this.drawParam.scaleWidth -= moveX / radius
+				this.drawParam.left += moveX / 2
+				this.drawParam.rotateX += moveX / 2
+				this.drawParam.scaleWidth -= moveX / 2 / radius
 				break
 		}
 	}

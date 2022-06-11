@@ -11,13 +11,10 @@ class Triangle extends DrawCommon {
 	}
 
 	privateDraw(ctx: CanvasRenderingContext2D) {
-		ctx.moveTo(this.drawParam.left - this.drawParam.rotateX, this.drawParam.top - this.drawParam.rotateY)
-		ctx.lineTo(this.vertexArray[4][0] - this.drawParam.rotateX, this.vertexArray[4][1] - this.drawParam.rotateY)
-		ctx.lineTo(this.vertexArray[6][0] - this.drawParam.rotateX, this.vertexArray[6][1] - this.drawParam.rotateY)
+		ctx.moveTo(this.drawParam.left, this.drawParam.top)
+		ctx.lineTo(this.vertexArray[4][0], this.vertexArray[4][1])
+		ctx.lineTo(this.vertexArray[6][0], this.vertexArray[6][1])
 		ctx.closePath()
-
-		this.vertex()
-		this.marginVertex()
 	}
 
 	vertex() {
@@ -40,19 +37,18 @@ class Triangle extends DrawCommon {
 	}
 
 	marginVertex() {
-		const left: number = this.drawParam.left as number
-		const top: number = this.drawParam.top as number
-		// 保证图形放大、缩小后获取的坐标正确值
+		const rotateX: number = this.drawParam.rotateX
+		const rotateY: number = this.drawParam.rotateY
 		const scaleWidth: number = this.drawParam.scaleWidth as number
 		const scaleHeight: number = this.drawParam.scaleHeight as number
-		const width: number = this.drawParam.width as number
-		const height: number = this.drawParam.height as number
+		const width: number = this.drawParam.width
+		const height: number = this.drawParam.height
 
 		this.marginVertexArray = [
-			[left - width / 2 - width / 2 * (scaleWidth - 1), top -  height / 2 * (scaleHeight - 1)],
-			[left + width / 2 + width / 2 * (scaleWidth - 1), top - height / 2 * (scaleHeight - 1)],
-			[left + width / 2 + width / 2 * (scaleWidth - 1), top + height + height / 2 * (scaleHeight - 1)],
-			[left - width / 2 - width / 2 * (scaleWidth - 1), top + height + height / 2 * (scaleHeight - 1)]
+			[rotateX - width / 2 * scaleWidth, rotateY - height / 2 * scaleHeight],
+			[rotateX + width / 2 * scaleWidth, rotateY - height / 2 * scaleHeight],
+			[rotateX + width / 2 * scaleWidth, rotateY + height / 2 * scaleHeight],
+			[rotateX - width / 2 * scaleWidth, rotateY + height / 2 * scaleHeight]
 		]
 
 		this.marginParam()
@@ -62,22 +58,27 @@ class Triangle extends DrawCommon {
 		const scaleWidth: number = this.drawParam.scaleWidth as number
 		const scaleHeight: number = this.drawParam.scaleHeight as number
 
+		// 是否正比例 positiveScaling 放大缩小
+		// moveX、moveY 一正一负时（即右上角和左下角）需处理
+		const ratio: number = (this.drawParam.height * scaleHeight) / (this.drawParam.width * scaleWidth)
+		moveY = this.drawParam.positiveScaling ? moveX * moveY <= 0 ? -moveX * ratio : moveX * ratio : moveY
+
 		switch (selectorMode) {
 			case "LEFTUPPERCORNER":
-				this.drawParam.left += moveX / 2
-				this.drawParam.top += moveY
+				this.drawParam.left += moveX / 2				
+				this.drawParam.top += moveY / 2 + moveY / scaleHeight / 2
 				this.drawParam.width -= moveX / scaleWidth
 				this.drawParam.height -= moveY / scaleHeight
 				break
 
 			case "UPPEREDGEOFFIGURE":
-				this.drawParam.top += moveY
+				this.drawParam.top += moveY / 2 + moveY / scaleHeight / 2
 				this.drawParam.height -= moveY / scaleHeight
 				break
 
 			case "UPPERRIGHTCORNER":
 				this.drawParam.left += moveX / 2
-				this.drawParam.top += moveY
+				this.drawParam.top += moveY / 2 + moveY / scaleHeight / 2
 				this.drawParam.width += moveX / scaleWidth
 				this.drawParam.height -= moveY / scaleHeight
 				break
@@ -89,16 +90,19 @@ class Triangle extends DrawCommon {
 
 			case "LOWERRIGHTCORNER":
 				this.drawParam.left += moveX / 2
+				this.drawParam.top += moveY / 2 - moveY / scaleHeight / 2
 				this.drawParam.width += moveX / scaleWidth
 				this.drawParam.height += moveY / scaleHeight
 				break
 
 			case "LOWEREDGEOFFIGURE":
+				this.drawParam.top += moveY / 2 - moveY / scaleHeight / 2
 				this.drawParam.height += moveY / scaleHeight
 				break
 
 			case "LOWERLEFTQUARTER":
 				this.drawParam.left += moveX / 2
+				this.drawParam.top += moveY / 2 - moveY / scaleHeight / 2
 				this.drawParam.width -= moveX / scaleWidth
 				this.drawParam.height += moveY / scaleHeight
 				break

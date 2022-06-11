@@ -47,7 +47,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Canvas, Rect, Circle } from "@/modules/index";
+import { Canvas, Rect, Circle, Triangle, Ellipse } from "@/modules/index";
 
 export default defineComponent({
   name: "basicShape",
@@ -156,7 +156,6 @@ export default defineComponent({
         top: 100,
         radius: 30,
         stroke: "green",
-        selectable: true,
       });
       canvas.add([rect, circle]);
       this.rect = rect;

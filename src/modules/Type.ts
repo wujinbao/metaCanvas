@@ -48,6 +48,7 @@ type DrawParam = {
 	globalAlpha: number,
 	globalCompositeOperation: GlobalCompositeOperation,
 	selectable: boolean,
+	positiveScaling: boolean,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [attr: string]: any
 }
