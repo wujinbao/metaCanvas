@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import basicShapeView from "../views/basicShapeView.vue";
 import animationExamplesView from "../views/animationExamplesView.vue";
+import allBasicShapeView from "../views/allBasicShapeView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -21,6 +22,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/animationExamplesView",
     name: "animationExamplesView",
     component: animationExamplesView,
+  },
+  {
+    path: "/allBasicShapeView",
+    name: "allBasicShapeView",
+    component: allBasicShapeView,
   },
 ];
 

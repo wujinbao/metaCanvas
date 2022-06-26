@@ -94,7 +94,6 @@ class Rect extends DrawCommon {
 				break
 
 			case "FIGURERIGHT":
-				// this.drawParam.left += moveX / 2 - moveX / scaleWidth / 2				
 				this.drawParam.width += moveX / scaleWidth
 				break
 

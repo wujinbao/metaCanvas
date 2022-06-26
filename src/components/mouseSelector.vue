@@ -8,22 +8,6 @@
       <p v-for="(content, index) of contentArray" :key="index">
         {{ content }}
       </p>
-      <h3>{{ mouseSelectorTitle }}</h3>
-      <p>{{ mouseSelectorContent }}</p>
-      <div @click="isSelector">
-        <div>
-          <label>
-            <span>false</span>
-            <input type="radio" v-model="selectorValue" value="false" />
-          </label>
-        </div>
-        <div>
-          <label>
-            <span>true</span>
-            <input type="radio" v-model="selectorValue" value="true" />
-          </label>
-        </div>
-      </div>
       <h3>{{ mouseOperation }}</h3>
       <p v-for="(content, index) of mouseOperationContent" :key="index">
         {{ content }}
@@ -48,10 +32,6 @@ export default defineComponent({
         "第二步：创建矩形 Rect 实例 - let rect = new Rect()。",
         "第三步：通过画布上的 add 方法把图形 rect 添加到画布 Canvas 上 - canvas.add([rect])。",
       ],
-      mouseSelectorTitle: "鼠标控制器是否开启：",
-      mouseSelectorContent:
-        "通过属性 selectable 值为 false 或 true 来实现控制器的开启。",
-      selectorValue: "false",
       mouseOperation: "鼠标操作描述：",
       mouseOperationContent: [
         "1. 图形内按下鼠标可以平移图形。",
@@ -76,7 +56,7 @@ export default defineComponent({
         // scaleWidth: 2,
         // scaleHeight: 2,
         // positiveScaling: true,
-        angle: 30,
+        // angle: 30,
       });
       let rect1 = new Rect({
         left: 200,
@@ -110,14 +90,6 @@ export default defineComponent({
       });
       canvas.add([rect]);
       this.rect = rect;
-    },
-    isSelector: function (e) {
-      let selectorValue = this.selectorValue == "false" ? true : false;
-      this.rect.set({
-        selectable: selectorValue,
-      });
-
-      this.rect.canvas.renderAll();
     },
   },
   mounted() {

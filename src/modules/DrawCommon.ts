@@ -91,7 +91,6 @@ class DrawCommon {
 		// 测试旋转中心代码
 		ctx.fillStyle = "green"
 		ctx.fillRect(this.drawParam.rotateX - 2.5, this.drawParam.rotateY - 2.5, 5, 5)
-		console.log(111, this.drawParam.rotateX, this.drawParam.rotateY)
 
 		ctx.save()
 		ctx.beginPath()
@@ -152,6 +151,8 @@ class DrawCommon {
 		ctx.strokeStyle = '#00a7d0'
 		ctx.fillStyle = '#00a7d0'
 		ctx.beginPath()
+		ctx.moveTo(vertexArray[1][0], vertexArray[1][1])
+		ctx.lineTo(vertexArray[8][0], vertexArray[8][1] + vertexMargin / scaleWidth / 2)
 		ctx.strokeRect(vertexArray[0][0], vertexArray[0][1], vertexArray[2][0] - vertexArray[0][0], vertexArray[4][1] - vertexArray[0][1])
 		vertexArray.map((item, index) => {
 			if (!this.drawParam.positiveScaling || index % 2 == 0) {
