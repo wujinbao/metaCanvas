@@ -121,6 +121,10 @@ class Ellipse extends DrawCommon {
 				this.drawParam.rX -= moveX / scaleWidth / 2
 			break
 		}
+
+		this.vertex()
+		this.rotationPoint()
+		this.marginVertex()
 	}
 }
 

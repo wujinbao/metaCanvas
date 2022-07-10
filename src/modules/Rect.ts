@@ -86,8 +86,7 @@ class Rect extends DrawCommon {
 				this.drawParam.height -= moveY / scaleHeight
 				break
 
-			case "UPPERRIGHTCORNER":
-				this.drawParam.left += moveX / 2 - moveX / scaleWidth / 2				
+			case "UPPERRIGHTCORNER":		
 				this.drawParam.top += moveY / 2 + moveY / scaleHeight / 2
 				this.drawParam.width += moveX / scaleWidth
 				this.drawParam.height -= moveY / scaleHeight
@@ -97,8 +96,7 @@ class Rect extends DrawCommon {
 				this.drawParam.width += moveX / scaleWidth
 				break
 
-			case "LOWERRIGHTCORNER":
-				this.drawParam.left += moveX / 2 - moveX / scaleWidth / 2				
+			case "LOWERRIGHTCORNER":			
 				this.drawParam.top += moveY / 2 - moveY / scaleHeight / 2
 				this.drawParam.width += moveX / scaleWidth
 				this.drawParam.height += moveY / scaleHeight
@@ -121,6 +119,10 @@ class Rect extends DrawCommon {
 				this.drawParam.width -= moveX / scaleWidth
 				break
 		}
+		
+		this.vertex()
+		this.rotationPoint()
+		this.marginVertex()
 	}
 }
 

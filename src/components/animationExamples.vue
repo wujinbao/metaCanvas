@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Canvas, Rect } from "@/modules/index";
+import { Canvas, Rect } from "metacanvas-npm";
 
 export default defineComponent({
   name: "animationExamples",

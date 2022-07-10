@@ -14,6 +14,11 @@ class DrawCommon {
         dotArray: [[10, 10]],
         width: 50,
         height: 50,
+		shearX: 0,
+		shearY: 0,
+		shearWidth: 0,
+		shearHeight: 0,
+		imgSrc: '',
         radius: 50,
         rX: 40,
         rY: 20,
@@ -81,34 +86,26 @@ class DrawCommon {
 	}
 
     draw(canvas: Canvas) {
-		this.vertex()
-		this.rotationPoint()
-		this.marginVertex()
-
 		this.canvas = canvas
 		const ctx: CanvasRenderingContext2D = canvas.ctx
-		
-		// 测试旋转中心代码
-		ctx.fillStyle = "green"
-		ctx.fillRect(this.drawParam.rotateX - 2.5, this.drawParam.rotateY - 2.5, 5, 5)
 
 		ctx.save()
 		ctx.beginPath()
-		ctx.shadowColor = this.drawParam.shadowColor as string
-		ctx.shadowBlur = this.drawParam.shadowBlur as number
-		ctx.shadowOffsetX = this.drawParam.shadowOffsetX as number
-		ctx.shadowOffsetY = this.drawParam.shadowOffsetY as number
-		ctx.lineCap = this.drawParam.lineCap as CanvasLineCap
-		ctx.lineJoin = this.drawParam.lineJoin as CanvasLineJoin
-		ctx.lineWidth = this.drawParam.lineWidth as number
-		ctx.miterLimit = this.drawParam.miterLimit as number
-		ctx.globalAlpha = this.drawParam.globalAlpha as number
-		ctx.globalCompositeOperation = this.drawParam.globalCompositeOperation as GlobalCompositeOperation
-		ctx.translate(this.drawParam.rotateX as number, this.drawParam.rotateY as number)
-		ctx.rotate(this.drawParam.angle as number * Math.PI / 180)
-		ctx.translate(-this.drawParam.rotateX as number, -this.drawParam.rotateY as number)
-		ctx.scale(this.drawParam.scaleWidth as number, this.drawParam.scaleHeight as number)
+		
+		this.initAttr(ctx)
+
+		if (this.drawParam.angle) {
+			ctx.translate(this.drawParam.rotateX as number, this.drawParam.rotateY as number)
+			ctx.rotate(this.drawParam.angle as number * Math.PI / 180)
+			ctx.translate(-this.drawParam.rotateX as number, -this.drawParam.rotateY as number)
+		}
+
+		if (this.drawParam.scaleWidth !== 1 || this.drawParam.scaleHeight !== 1) {
+			ctx.scale(this.drawParam.scaleWidth as number, this.drawParam.scaleHeight as number)
+		}
+
 		this.privateDraw(ctx)
+
 		if (this.drawParam.fill && this.drawParam.stroke) {
 			ctx.fillStyle = this.drawParam.fill
 			ctx.fill()
@@ -122,6 +119,7 @@ class DrawCommon {
 			ctx.strokeStyle = this.drawParam.stroke
 			ctx.stroke()
 		}
+		
 		ctx.closePath()
 
 		if (this.drawParam.selectable) {
@@ -133,6 +131,19 @@ class DrawCommon {
 		if (this.drawParam.selectable) {
 			this.marginDraw(ctx)
 		}
+	}
+
+	initAttr(ctx: CanvasRenderingContext2D) {
+		ctx.shadowColor = this.drawParam.shadowColor as string
+		ctx.shadowBlur = this.drawParam.shadowBlur as number
+		ctx.shadowOffsetX = this.drawParam.shadowOffsetX as number
+		ctx.shadowOffsetY = this.drawParam.shadowOffsetY as number
+		ctx.lineCap = this.drawParam.lineCap as CanvasLineCap
+		ctx.lineJoin = this.drawParam.lineJoin as CanvasLineJoin
+		ctx.lineWidth = this.drawParam.lineWidth as number
+		ctx.miterLimit = this.drawParam.miterLimit as number
+		ctx.globalAlpha = this.drawParam.globalAlpha as number
+		ctx.globalCompositeOperation = this.drawParam.globalCompositeOperation as GlobalCompositeOperation
 	}
 
     // 图形选择器 - 根据顶点绘制
@@ -253,13 +264,17 @@ class DrawCommon {
 	translation(moveX: number, moveY: number) {
 		this.drawParam.left += moveX
 		this.drawParam.top += moveY
-		this.drawParam.rotateX += moveX
-		this.drawParam.rotateY += moveY
+
+		this.vertex()
+		this.rotationPoint()
+		this.marginVertex()
 	}
 
 	rotate(startX: number, startY: number, endX: number, endY: number) {
 		const rotationAngle: number = computeMethod.rotationAngle(this.drawParam.rotateX, this.drawParam.rotateY, startX, startY, endX, endY)
 		this.drawParam.angle -= rotationAngle
+
+		this.marginVertex()
 	}
 
     // 父类需子类重写的方法

@@ -47,7 +47,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Canvas, Rect, Circle, Triangle, Ellipse } from "@/modules/index";
+import { Canvas, Rect, Circle, Triangle, Ellipse } from "metacanvas-npm";
 
 export default defineComponent({
   name: "basicShape",

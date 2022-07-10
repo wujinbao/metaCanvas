@@ -5,6 +5,7 @@ import Circle from "./Circle"
 import Ellipse from "./Ellipse"
 import Triangle from "./Triangle"
 import Line from "./Line"
+import Picture from "./Picture"
 
 export default {
     Canvas,
@@ -12,7 +13,8 @@ export default {
     Circle,
     Ellipse,
     Triangle,
-    Line
+    Line,
+    Picture
 }
 
 export {
@@ -21,5 +23,6 @@ export {
     Circle,
     Ellipse,
     Triangle,
-    Line
+    Line,
+    Picture
 }

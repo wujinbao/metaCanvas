@@ -19,9 +19,6 @@ class Circle extends DrawCommon {
 			this.drawParam.eAngle * Math.PI,
 			this.drawParam.counterclockwise
 		)
-
-		this.vertex()
-		this.marginVertex()
 	}
 
 	vertex() {
@@ -129,6 +126,10 @@ class Circle extends DrawCommon {
 				this.drawParam.scaleWidth -= moveX / 2 / radius
 				break
 		}
+
+		this.vertex()
+		this.rotationPoint()
+		this.marginVertex()
 	}
 }
 

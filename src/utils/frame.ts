@@ -53,15 +53,19 @@ function rectWithin(pointX: number, pointY: number, rectVertex: Array<number>) {
     }
 }
 
-function marginRectDraw(ctx: CanvasRenderingContext2D, marginParamArray: Array<number>, selectAllMarginRotateX: number, selectAllMarginRotateY: number, selectAllMarginAngle: number) {
+function marginRectDraw(ctx: CanvasRenderingContext2D, marginParamArray: Array<number>, vertexArray: Array<[number, number]>, marginRotateX: number, marginRotateY: number, marginAngle: number) {
+    // console.log(marginParamArray, marginRotateX, marginRotateY, marginAngle)
     ctx.save()
-    if (selectAllMarginAngle !== 0) {
-        ctx.translate(selectAllMarginRotateX, selectAllMarginRotateY)
-        ctx.rotate(selectAllMarginAngle * Math.PI / 180)
-        ctx.translate(-selectAllMarginRotateX, -selectAllMarginRotateY)
+    if (marginAngle !== 0) {
+        ctx.translate(marginRotateX, marginRotateY)
+        ctx.rotate(marginAngle * Math.PI / 180)
+        ctx.translate(-marginRotateX, -marginRotateY)
     }
     ctx.strokeStyle = "blue"
 	ctx.strokeRect(marginParamArray[0], marginParamArray[1], marginParamArray[2] - marginParamArray[0], marginParamArray[3] - marginParamArray[1])
+    
+    this.vertexDraw(ctx, vertexArray)
+    
     ctx.restore()
 }
 
@@ -72,9 +76,14 @@ function marginTranslation(moveX: number, moveY: number, marginParamArray: Array
     marginParamArray[3] += moveY
 }
 
-function marginRotate(startX: number, startY: number, endX: number, endY: number, selectAllMarginRotateX: number, selectAllMarginRotateY: number, selectAllMarginAngle: number) {
+function rotateCoordinates(marginRotateX: number, marginRotateY: number, marginParamArray: Array<number>) {
+    marginRotateX = (marginParamArray[2] - marginParamArray[0]) / 2
+	marginRotateY = (marginParamArray[3] - marginParamArray[1]) / 2
+}
+
+function marginRotate(selectAllMarginRotateX: number, selectAllMarginRotateY: number, startX: number, startY: number, endX: number, endY: number) {
     const rotationAngle: number = computeMethod.rotationAngle(selectAllMarginRotateX, selectAllMarginRotateY, startX, startY, endX, endY)
-	selectAllMarginAngle -= rotationAngle
+    return rotationAngle
 }
 
 function marginScale(selectorMode: string, moveX: number, moveY: number, marginParamArray: Array<number>) {
@@ -124,6 +133,7 @@ export default {
     vertexWithin,
     rectWithin,
     marginTranslation,
+    rotateCoordinates,
     marginRotate,
     marginScale,
     marginRectDraw
@@ -136,6 +146,7 @@ export {
     vertexWithin,
     rectWithin,
     marginTranslation,
+    rotateCoordinates,
     marginRotate,
     marginScale,
     marginRectDraw

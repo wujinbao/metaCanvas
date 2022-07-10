@@ -110,14 +110,17 @@ class Canvas {
 		this.startY = e.offsetY
 
 		if (this.selectAllState) {
+			const angle: number = this.selectAllMarginAngle as number
+			const point: Array<number> = computeMethod.rotationPoint(this.selectAllMarginRotateX, this.selectAllMarginRotateY, this.startX, this.startY, -angle)
+
 			for (let i = 0; i < this.selectAllVertexArray.length; i++) {
-				if (frame.vertexWithin(this.startX, this.startY, this.selectAllVertexArray[i])) {
+				if (frame.vertexWithin(point[0], point[1], this.selectAllVertexArray[i])) {
 					this.canvas.onmousemove = this.selectAllOnmousemove.bind(this, SelectorMode[i])
 					return
 				}
 			}
 
-			if (frame.rectWithin(this.startX, this.startY, this.selectAllMarginParamArray)) {
+			if (frame.rectWithin(point[0], point[1], this.selectAllMarginParamArray)) {
 				this.canvas.onmousemove = this.selectAllOnmousemove.bind(this, SelectorMode[9])
 				return
 			}
@@ -176,7 +179,8 @@ class Canvas {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	onmouseup(e: any) {
 		this.canvas.onmousemove = null
-
+		
+		if (this.selectAllState) return
 		const endX: number = e.offsetX
 		const endY: number = e.offsetY
 
@@ -208,7 +212,6 @@ class Canvas {
 
 		this.drawTargetArray.map((drawTargetItem) => {
 			if (marginParamArray[0] < drawTargetItem.marginParamArray[2] && marginParamArray[2] > drawTargetItem.marginParamArray[0] && marginParamArray[1] < drawTargetItem.marginParamArray[3] && marginParamArray[3] > drawTargetItem.marginParamArray[1]) {
-				drawTargetItem.marginDraw(this.ctx)
 				this.selectAllDrawArray.push(drawTargetItem)
 				if (!this.selectAllState) {
 					this.selectAllMarginParamArray = drawTargetItem.marginParamArray
@@ -223,13 +226,10 @@ class Canvas {
 			}
 		})
 
-		this.selectAllMarginRotateX = this.selectAllMarginParamArray[2] - this.selectAllMarginParamArray[0] / 2
-		this.selectAllMarginRotateY = this.selectAllMarginParamArray[3] - this.selectAllMarginParamArray[1] / 2
-		frame.marginRectDraw(this.ctx, this.selectAllMarginParamArray, this.selectAllMarginRotateX, this.selectAllMarginRotateY, this.selectAllMarginAngle)
-
 		this.selectAllVertexArray = frame.vertex(this.selectAllMarginParamArray[0], this.selectAllMarginParamArray[1], this.selectAllMarginParamArray[2], this.selectAllMarginParamArray[3])
-
-		frame.vertexDraw(this.ctx, this.selectAllVertexArray)
+		this.selectAllMarginRotateX = (this.selectAllMarginParamArray[2] + this.selectAllMarginParamArray[0]) / 2
+		this.selectAllMarginRotateY = (this.selectAllMarginParamArray[3] + this.selectAllMarginParamArray[1]) / 2
+		frame.marginRectDraw(this.ctx, this.selectAllMarginParamArray, this.selectAllVertexArray, this.selectAllMarginRotateX, this.selectAllMarginRotateY, this.selectAllMarginAngle)
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -241,7 +241,7 @@ class Canvas {
 
 		if (selectorMode == "WITHINGRAPHICS") {
 			drawTargetItem.translation(moveX, moveY)
-		} if (selectorMode == "ROTATIONPOSITION") {
+		} else if (selectorMode == "ROTATIONPOSITION") {
 			drawTargetItem.rotate(this.startX, this.startY, currentX, currentY)
 		} else {
 			drawTargetItem.scale(selectorMode, moveX, moveY)
@@ -259,30 +259,69 @@ class Canvas {
 		const moveX: number = currentX - this.startX
 		const moveY: number = currentY - this.startY
 		const selectAllDrawArray: Array<DrawCommon> = this.selectAllDrawArray
+		const scaleX = moveX / (this.selectAllMarginParamArray[2] - this.selectAllMarginParamArray[0])
+		const scaleY = moveY / (this.selectAllMarginParamArray[3] - this.selectAllMarginParamArray[1])
 
 		if (selectorMode == "WITHINGRAPHICS") {
 			for (let i = 0; i < selectAllDrawArray.length; i++) {
 				selectAllDrawArray[i].translation(moveX, moveY)
 			}
 			frame.marginTranslation(moveX, moveY, this.selectAllMarginParamArray)
-		} if (selectorMode == "ROTATIONPOSITION") {
+		} else if (selectorMode == "ROTATIONPOSITION") {
+			const rotationAngle: number = frame.marginRotate(this.selectAllMarginRotateX, this.selectAllMarginRotateY, this.startX, this.startY, currentX, currentY)
 			for (let i = 0; i < selectAllDrawArray.length; i++) {
-				selectAllDrawArray[i].rotate(this.startX, this.startY, currentX, currentY)
+				selectAllDrawArray[i].drawParam.angle -= rotationAngle
+				selectAllDrawArray[i].drawParam.rotateX = this.selectAllMarginRotateX
+				selectAllDrawArray[i].drawParam.rotateY = this.selectAllMarginRotateY
 			}
-			frame.marginRotate(this.startX, this.startY, currentX, currentY, this.selectAllMarginRotateX, this.selectAllMarginRotateY, this.selectAllMarginAngle)
+			
+			this.selectAllMarginAngle -= rotationAngle
 		} else {
 			for (let i = 0; i < selectAllDrawArray.length; i++) {
-				selectAllDrawArray[i].scale(selectorMode, moveX, moveY)
+				switch (selectorMode) {
+					case "LEFTUPPERCORNER":
+						selectAllDrawArray[i].translation(scaleX * (this.selectAllMarginParamArray[2] - selectAllDrawArray[i].marginParamArray[2]), scaleY * (this.selectAllMarginParamArray[3] - selectAllDrawArray[i].marginParamArray[3]))
+						break
+		
+					case "UPPEREDGEOFFIGURE":
+						selectAllDrawArray[i].translation(0, scaleY * (this.selectAllMarginParamArray[3] - selectAllDrawArray[i].marginParamArray[3]))
+						break
+		
+					case "UPPERRIGHTCORNER":
+						selectAllDrawArray[i].translation(scaleX * (selectAllDrawArray[i].marginParamArray[0] - this.selectAllMarginParamArray[0]), scaleY * (this.selectAllMarginParamArray[3] - selectAllDrawArray[i].marginParamArray[3]))
+						break
+		
+					case "FIGURERIGHT":
+						selectAllDrawArray[i].translation(scaleX * (selectAllDrawArray[i].marginParamArray[0] - this.selectAllMarginParamArray[0]), 0)
+						break
+		
+					case "LOWERRIGHTCORNER":
+						selectAllDrawArray[i].translation(scaleX * (selectAllDrawArray[i].marginParamArray[0] - this.selectAllMarginParamArray[0]), scaleY * (selectAllDrawArray[i].marginParamArray[1] - this.selectAllMarginParamArray[1]))
+						break
+		
+					case "LOWEREDGEOFFIGURE":
+						selectAllDrawArray[i].translation(0, scaleY * (selectAllDrawArray[i].marginParamArray[1] - this.selectAllMarginParamArray[1]))
+						break
+		
+					case "LOWERLEFTQUARTER":
+						selectAllDrawArray[i].translation(scaleX * (this.selectAllMarginParamArray[2] - selectAllDrawArray[i].marginParamArray[2]), scaleY * (selectAllDrawArray[i].marginParamArray[1] - this.selectAllMarginParamArray[1]))
+						break
+		
+					case "FIGURELEFT":
+						selectAllDrawArray[i].translation(scaleX * (this.selectAllMarginParamArray[2] - selectAllDrawArray[i].marginParamArray[2]), 0)
+						break
+				}
+				selectAllDrawArray[i].scale(selectorMode, scaleX * (selectAllDrawArray[i].marginParamArray[2] - selectAllDrawArray[i].marginParamArray[0]), scaleY * (selectAllDrawArray[i].marginParamArray[3] - selectAllDrawArray[i].marginParamArray[1]))
 			}
 			frame.marginScale(selectorMode, moveX, moveY, this.selectAllMarginParamArray)
 		}
 
 		this.renderAll()
 
-		frame.marginRectDraw(this.ctx, this.selectAllMarginParamArray, this.selectAllMarginRotateX, this.selectAllMarginRotateY, this.selectAllMarginAngle)
-
 		this.selectAllVertexArray = frame.vertex(this.selectAllMarginParamArray[0], this.selectAllMarginParamArray[1], this.selectAllMarginParamArray[2], this.selectAllMarginParamArray[3])
-		frame.vertexDraw(this.ctx, this.selectAllVertexArray)
+		this.selectAllMarginRotateX = (this.selectAllMarginParamArray[2] + this.selectAllMarginParamArray[0]) / 2
+		this.selectAllMarginRotateY = (this.selectAllMarginParamArray[3] + this.selectAllMarginParamArray[1]) / 2
+		frame.marginRectDraw(this.ctx, this.selectAllMarginParamArray, this.selectAllVertexArray, this.selectAllMarginRotateX, this.selectAllMarginRotateY, this.selectAllMarginAngle)
 
 		this.startX = currentX
 		this.startY = currentY

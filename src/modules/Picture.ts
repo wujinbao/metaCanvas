@@ -4,17 +4,21 @@
 import DrawCommon from "./DrawCommon"
 import { PartialDrawParam } from "./Type"
 
-// 三角形类
-class Triangle extends DrawCommon {
+// 矩形类
+class Picture extends DrawCommon {
 	constructor(drawParam?: PartialDrawParam) {
 		super(drawParam)
 	}
 
 	privateDraw(ctx: CanvasRenderingContext2D) {
-		ctx.moveTo(this.drawParam.left, this.drawParam.top)
-		ctx.lineTo(this.vertexArray[4][0], this.vertexArray[4][1])
-		ctx.lineTo(this.vertexArray[6][0], this.vertexArray[6][1])
-		ctx.closePath()
+		const img = new Image()
+		img.src = this.drawParam.imgSrc
+
+		if (!this.drawParam.shearWidth && !this.drawParam.shearHeight) {
+			ctx.drawImage(img, this.drawParam.left, this.drawParam.top, this.drawParam.width, this.drawParam.height)
+		} else {
+			ctx.drawImage(img, this.drawParam.shearX, this.drawParam.shearY, this.drawParam.shearWidth, this.drawParam.shearHeight, this.drawParam.left, this.drawParam.top, this.drawParam.width, this.drawParam.height)
+		}
 	}
 
 	vertex() {
@@ -24,15 +28,15 @@ class Triangle extends DrawCommon {
 		const height: number = this.drawParam.height as number
 
 		this.vertexArray = [
-			[left - width / 2, top],
 			[left, top],
 			[left + width / 2, top],
-			[left + width / 2, top + height / 2],
+			[left + width, top],
+			[left + width, top + height / 2],
+			[left + width, top + height],
 			[left + width / 2, top + height],
 			[left, top + height],
-			[left - width / 2, top + height],
-			[left - width / 2, top + height / 2],
-			[left, top - this.vertexMargin * 2]
+			[left, top + height / 2],
+			[left + width / 2, top - this.vertexMargin * 2]
 		]
 	}
 
@@ -63,9 +67,17 @@ class Triangle extends DrawCommon {
 		const ratio: number = (this.drawParam.height * scaleHeight) / (this.drawParam.width * scaleWidth)
 		moveY = this.drawParam.positiveScaling ? moveX * moveY <= 0 ? -moveX * ratio : moveX * ratio : moveY
 
+		/* 
+		* 分析宽度高度变化后，使旋转中心移动之后 left、top 的变化值
+		* moveX / scaleWidth 是增加的宽度，实际扩大 moveX / scaleWidth * scaleWidth 即 moveX，那么旋转中心 rotateX 增加 moveX / 2。
+		* moveY / scaleHeight 是增加的宽度，实际扩大 moveY / scaleHeight * scaleHeight 即 moveY，那么旋转中心 rotateY 增加 moveY / 2。
+		* left 与 旋转中心 rotateX 之间隔 1 / scaleWidth 的距离。
+		* top 与 旋转中心 rotateY 之间隔 1 / scaleHeight 的距离。
+		*/
+
 		switch (selectorMode) {
 			case "LEFTUPPERCORNER":
-				this.drawParam.left += moveX / 2				
+				this.drawParam.left += moveX / 2 + moveX / scaleWidth / 2				
 				this.drawParam.top += moveY / 2 + moveY / scaleHeight / 2
 				this.drawParam.width -= moveX / scaleWidth
 				this.drawParam.height -= moveY / scaleHeight
@@ -77,19 +89,18 @@ class Triangle extends DrawCommon {
 				break
 
 			case "UPPERRIGHTCORNER":
-				this.drawParam.left += moveX / 2
+				this.drawParam.left += moveX / 2 - moveX / scaleWidth / 2				
 				this.drawParam.top += moveY / 2 + moveY / scaleHeight / 2
 				this.drawParam.width += moveX / scaleWidth
 				this.drawParam.height -= moveY / scaleHeight
 				break
 
 			case "FIGURERIGHT":
-				this.drawParam.left += moveX / 2
 				this.drawParam.width += moveX / scaleWidth
 				break
 
 			case "LOWERRIGHTCORNER":
-				this.drawParam.left += moveX / 2
+				this.drawParam.left += moveX / 2 - moveX / scaleWidth / 2				
 				this.drawParam.top += moveY / 2 - moveY / scaleHeight / 2
 				this.drawParam.width += moveX / scaleWidth
 				this.drawParam.height += moveY / scaleHeight
@@ -101,14 +112,14 @@ class Triangle extends DrawCommon {
 				break
 
 			case "LOWERLEFTQUARTER":
-				this.drawParam.left += moveX / 2
+				this.drawParam.left += moveX / 2 + moveX / scaleWidth / 2				
 				this.drawParam.top += moveY / 2 - moveY / scaleHeight / 2
 				this.drawParam.width -= moveX / scaleWidth
 				this.drawParam.height += moveY / scaleHeight
 				break
 
 			case "FIGURELEFT":
-				this.drawParam.left += moveX / 2
+				this.drawParam.left += moveX / 2 + moveX / scaleWidth / 2				
 				this.drawParam.width -= moveX / scaleWidth
 				break
 		}
@@ -119,4 +130,4 @@ class Triangle extends DrawCommon {
 	}
 }
 
-export default Triangle
+export default Picture
