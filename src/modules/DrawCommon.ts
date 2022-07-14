@@ -95,13 +95,15 @@ class DrawCommon {
 		this.initAttr(ctx)
 
 		if (this.drawParam.angle) {
-			ctx.translate(this.drawParam.rotateX as number, this.drawParam.rotateY as number)
-			ctx.rotate(this.drawParam.angle as number * Math.PI / 180)
-			ctx.translate(-this.drawParam.rotateX as number, -this.drawParam.rotateY as number)
+			ctx.translate(this.drawParam.rotateX, this.drawParam.rotateY)
+			ctx.rotate(this.drawParam.angle * Math.PI / 180)
+			ctx.translate(-this.drawParam.rotateX, -this.drawParam.rotateY)
 		}
 
 		if (this.drawParam.scaleWidth !== 1 || this.drawParam.scaleHeight !== 1) {
-			ctx.scale(this.drawParam.scaleWidth as number, this.drawParam.scaleHeight as number)
+			ctx.translate(this.drawParam.rotateX, this.drawParam.rotateY)
+			ctx.scale(this.drawParam.scaleWidth, this.drawParam.scaleHeight)
+			ctx.translate(-this.drawParam.rotateX, -this.drawParam.rotateY)
 		}
 
 		this.privateDraw(ctx)

@@ -31,24 +31,32 @@ class Canvas {
 	selectAllMarginAngle: number = 0
 	selectAllVertexArray: Array<[number, number]> = []
     constructor(canvasParam?: PartialCanvasParam) {
-        const canvas = document.createElement('canvas') as HTMLCanvasElement
-        const ctx = canvas.getContext('2d')
-        canvas.onmousedown = this.onmousedown.bind(this)
-		canvas.onmouseup = this.onmouseup.bind(this)
+		const domNew = canvasParam.id ? document.getElementById(canvasParam.id) as HTMLElement : canvasParam.dom ? canvasParam.dom as HTMLElement : document.body as HTMLBodyElement
+
+		if (domNew.tagName == "CANVAS") {
+			this.canvas = domNew as HTMLCanvasElement
+		} else {
+			this.canvas = document.createElement('canvas') as HTMLCanvasElement
+			domNew.appendChild(this.canvas)
+		}
+
+        this.ctx = this.canvas.getContext('2d')
+        this.canvas.onmousedown = this.onmousedown.bind(this)
+		this.canvas.onmouseup = this.onmouseup.bind(this)
         if (canvasParam) {
             if (!canvasParam.width) {
-                canvas.width = this.canvasParam.width as number
+                this.canvas.width = this.canvasParam.width as number
             }
             if (!canvasParam.height) {
-                canvas.height = this.canvasParam.height as number
+                this.canvas.height = this.canvasParam.height as number
             }
 
             let key: (keyof PartialCanvasParam) // keyof 是索引类型查询操作符
             for (key in canvasParam) {  
                 if (key == "width") {                  
-                    canvas[key] = canvasParam[key] as number
+                    this.canvas[key] = canvasParam[key] as number
                 } else if (key == "height") {
-                    canvas[key] = canvasParam[key] as number
+                    this.canvas[key] = canvasParam[key] as number
                 } else {
 					if (key in this.canvasParam) {
                     	this.canvasParam[key] = canvasParam[key]
@@ -56,17 +64,9 @@ class Canvas {
                 }
             }
         } else {
-            canvas.width = this.canvasParam.width as number
-            canvas.height = this.canvasParam.height as number
+            this.canvas.width = this.canvasParam.width as number
+            this.canvas.height = this.canvasParam.height as number
         }
-
-		const domNew = this.canvasParam.id ? document.getElementById(this.canvasParam.id) as HTMLElement : this.canvasParam.dom ? this.canvasParam.dom as HTMLElement : document.body as HTMLBodyElement
-        domNew.appendChild(canvas)
-
-        if (ctx) {
-            this.ctx = ctx
-        }
-        this.canvas = canvas
     }
 
     add(drawTargetArray: Array<DrawCommon>) {

@@ -1,5 +1,5 @@
 <template>
-  <div ref="basicShape">
+  <div>
     <h1 class="title">
       {{ Title }}
     </h1>
@@ -9,6 +9,7 @@
         {{ content }}
       </p>
     </div>
+    <canvas ref="basicShape"></canvas>
   </div>
 </template>
 
@@ -27,13 +28,12 @@ export default defineComponent({
   name: "basicShape",
   data() {
     return {
-      rect: new Rect(),
       Title: "绘制基本形状",
       contentTitle: "绘制图形步骤：",
       contentArray: [
         "第一步：创建画布 Canvas 实例 - let canvas = new Canvas()。",
-        "第二步：创建矩形 Rect 实例 - let rect = new Rect()。",
-        "第三步：通过画布上的 add 方法把图形 rect 添加到画布 Canvas 上 - canvas.add([rect])。",
+        "第二步：创建矩形 Rect 实例 - let rect = new Rect()；创建圆形 Circle 实例 - let circle = new Circle()；创建三角形 Triangle 实例 - let triangle = new Triangle()；创建椭圆 Ellipse 实例 - let ellipse = new Ellipse()；创建图片 Picture 实例 - let picture = new Picture()。",
+        "第三步：通过画布上的 add 方法把图形 rect、circle、triangle、ellipse、picture 添加到画布 Canvas 上 - canvas.add([rect, circle, triangle, ellipse, picture])。",
       ],
     };
   },
@@ -49,17 +49,16 @@ export default defineComponent({
         top: 50,
         width: 100,
         height: 100,
-        // scaleWidth: 2,
         stroke: "red",
       });
       let circle = new Circle({
-        left: 500,
+        left: 400,
         top: 300,
         radius: 50,
         stroke: "green",
       });
       let triangle = new Triangle({
-        left: 150,
+        left: 80,
         top: 250,
         width: 50,
         height: 100,
@@ -73,14 +72,13 @@ export default defineComponent({
         stroke: "yellow",
       });
       let picture = new Picture({
-        left: 300,
+        left: 200,
         top: 250,
         width: 100,
         height: 100,
         imgSrc: "https://www.runoob.com/try/demo_source/img_the_scream.jpg",
       });
-      canvas.add([rect, triangle, ellipse, picture]);
-      this.rect = rect;
+      canvas.add([rect, circle, triangle, ellipse, picture]);
     },
   },
   mounted() {

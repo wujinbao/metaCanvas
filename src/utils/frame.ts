@@ -48,13 +48,12 @@ function vertexWithin(pointX: number, pointY: number, selectAllVertex: Array<num
 }
 
 function rectWithin(pointX: number, pointY: number, rectVertex: Array<number>) {
-    if (pointX >= rectVertex[0] && pointX >= rectVertex[1] && pointY <= rectVertex[2] && pointY <= rectVertex[3]) {
+    if (pointX >= rectVertex[0] && pointY >= rectVertex[1] && pointX <= rectVertex[2] && pointY <= rectVertex[3]) {
         return true
     }
 }
 
 function marginRectDraw(ctx: CanvasRenderingContext2D, marginParamArray: Array<number>, vertexArray: Array<[number, number]>, marginRotateX: number, marginRotateY: number, marginAngle: number) {
-    // console.log(marginParamArray, marginRotateX, marginRotateY, marginAngle)
     ctx.save()
     if (marginAngle !== 0) {
         ctx.translate(marginRotateX, marginRotateY)

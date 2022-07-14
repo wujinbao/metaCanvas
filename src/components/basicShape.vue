@@ -47,7 +47,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Canvas, Rect, Circle, Triangle, Ellipse } from "metacanvas-npm";
+import { Canvas, Rect, Circle } from "metacanvas-npm";
 
 export default defineComponent({
   name: "basicShape",
@@ -64,7 +64,7 @@ export default defineComponent({
       ],
       describeTitle: "属性描述说明：",
       describeArray: [
-        "Canvas 实例: 参数是一个对象类型，可以传入 width (类型 number)、height (类型 number) 去设置画布的大小，默认值 width 为 800, height 为 600。add 方法传入的参数类型是一个数组，数组里的类型为图形的实例对象。",
+        "Canvas 实例: 参数是一个对象类型，可以传入 width (类型 number)、height (类型 number) 去设置画布的大小，默认值 width 为 800, height 为 600。还可以传入 id (类型 string) 或 dom 来确定 canvas 元素位置，不传参时，即默认位置为 body 元素后面添加 canvas 元素。 add 方法传入的参数类型是一个数组，数组里的类型为图形的实例对象。",
         "Rect 实例：参数是一个对象类型，可以传入 left (类型 number)、top (类型 number) 去设置矩形的摆放位置, width (类型 number)、height (类型 number) 去设置矩形的大小, stroke (类型 string)、fill (类型 string) 去设置矩形描边与填充的颜色，剩下属性可以自行去了解学习。",
         "Circle 实例：参数是一个对象类型，可以传入 left (类型 number)、top (类型 number) 去设置圆形的摆放位置, radius (类型 number) 去设置圆形的大小, stroke (类型 string)、fill (类型 string) 去设置圆形描边与填充的颜色，剩下属性可以自行去了解学习。",
       ],
